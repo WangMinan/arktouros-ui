@@ -1,17 +1,36 @@
 html.dark{
     /* 背景换成深灰色 */
-    background: #202020;
+    background: #000000;
     /* 设置字体颜色为白色 */
     color: #fff;
     .header{
-        background: black;
+        background-color: #212224;
+    }
+    .aside{
+        background-color: #212224;
     }
     // 所有img与el-img标签下的图片亮度下调
     img, .el-image__inner{
         filter: brightness(0.8);
     }
     .el-card{
-        background: black;
+        background: #212224;
         color: white;
+    }
+    .el-header {
+        .r-content{
+            .githubIcon {
+                filter: invert(1);
+            }
+            .el-button {
+                --el-button-bg-color: #212224;
+                --el-button-hover-bg-color: #64676a;
+                --el-button-hover-border-color: #64676a;
+                --el-button-text-color: white;
+                --el-button-hover-text-color: white;
+                --el-button-active-border-color: #64676a;
+                --el-button-active-bg-color: #64676a;
+            }
+        }
     }
 }
