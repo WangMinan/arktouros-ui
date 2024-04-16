@@ -73,6 +73,8 @@
 
 <template>
     <div class="header" id="header">
+        <div class="l-content"></div>
+        <div class="flex-grow"></div>
         <div class="r-content">
             <el-space wrap>
                 <div>
@@ -113,7 +115,12 @@
         align-items: center;
         justify-content: flex-end;
         background-color: #e9e9eb;
-        
+        .l-content {
+            margin-left: 1%;
+        }
+        .flex-grow {
+            flex-grow: 1;
+        }
         .r-content {
             display: flex; /* 添加这个属性 */
             align-items: center; /* 确保这个属性在这里 */

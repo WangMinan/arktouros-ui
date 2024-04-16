@@ -7,14 +7,14 @@ import DashBoardHeader from "@/components/basic/DashBoardHeader.vue";
 <template>
     <div class="dashBoardContainer">
         <el-container>
-            <el-aside>
-                <DashBoardAside />
-            </el-aside>
+            <DashBoardAside />
             <el-container>
                 <el-header>
                     <DashBoardHeader />
                 </el-header>
-                <el-main>Main</el-main>
+                <el-main>
+                    <router-view/>
+                </el-main>
             </el-container>
         </el-container>
     </div>
@@ -27,10 +27,6 @@ import DashBoardHeader from "@/components/basic/DashBoardHeader.vue";
         .el-container{
             height: 100%;
             width: 100%;
-            .el-aside {
-                max-width: 18%;
-                border-right: 1px #000000 solid;
-            }
             .el-header{
                 padding: 0;
                 max-height: 6%;

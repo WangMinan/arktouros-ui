@@ -1,4 +1,5 @@
-import {createApp} from 'vue'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
@@ -11,9 +12,13 @@ import './assets/style/main.css'
 import './assets/style/dark.less'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
+// pinia持久化插件
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
+
 const app = createApp(App)
+    .use(createPinia().use(piniaPluginPersistedState))
     .use(router)
-    .use(ElementPlus,{
+    .use(ElementPlus, {
         locale: zhCn
     })
 
