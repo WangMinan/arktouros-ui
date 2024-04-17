@@ -1,6 +1,7 @@
 <script setup>
     import { useDark, useToggle } from '@vueuse/core'
     import { useRouter } from "vue-router";
+    import { useAsideStore } from "@/store/aside/index.js";
     
     const router = useRouter()
     
@@ -10,9 +11,7 @@
         valueLight: 'light', // 类名亮色模式下值是light
     })
     
-    const refresh = () => {
-        router.go(0)
-    }
+    const asideStore = useAsideStore()
     
     const gotoGithub = () => {
         window.open('https://github.com/wangminan/arktouros')
@@ -92,7 +91,7 @@
                     <el-button
                         icon="HomeFilled"
                         circle
-                        @click="router.push('/main')"
+                        @click="router.push('/main'); asideStore.resetActive();"
                     ></el-button>
                 </div>
                 

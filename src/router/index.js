@@ -10,7 +10,7 @@ const routes = [
         path: '/main',
         name: 'main',
         meta: {
-          title: 'Arktouros-UI'
+            title: 'Arktouros-UI'
         },
         component: () => import("@/views/DashBoard.vue"),
         redirect: '/main/default',
@@ -29,7 +29,24 @@ const routes = [
                 meta: {
                     title: 'Arktouros|Service'
                 },
-                component: () => import("@/views/service/ServiceMain.vue")
+                children: [
+                    {
+                        path: 'table',
+                        name: 'table',
+                        meta: {
+                            title: 'Arktouros|Table'
+                        },
+                        component: () => import("@/views/service/ServiceTable.vue")
+                    },
+                    {
+                        path: 'topology',
+                        name: 'topology',
+                        meta: {
+                            title: 'Arktouros|Topology'
+                        },
+                        component: () => import("@/views/service/ServiceTopology.vue")
+                    }
+                ]
             },
             {
                 path: 'log',

@@ -59,12 +59,22 @@
             :default-active="defaultActive"
             @select="updateStore"
         >
-            <el-menu-item index="/main/service">
-                <img class="menu-icon"
-                     src="@/assets/images/side-icons/service.svg"
-                     alt="service"/>
-                <span>服务</span>
-            </el-menu-item>
+            <el-sub-menu index="1">
+                <template #title>
+                    <div class="sub-menu-title">
+                        <img class="menu-icon"
+                             src="@/assets/images/side-icons/service.svg"
+                             alt="service"/>
+                        <span>服务</span>
+                    </div>
+                </template>
+                <el-menu-item index="/main/service/table">
+                    <span>服务总览</span>
+                </el-menu-item>
+                <el-menu-item index="/main/service/topology">
+                    <span>服务拓扑</span>
+                </el-menu-item>
+            </el-sub-menu>
             <el-menu-item index="/main/trace">
                 <img class="menu-icon"
                      src="@/assets/images/side-icons/nerve.svg"
@@ -98,6 +108,7 @@
         overflow-x: hidden;
         // 引用 --el-menu-border-color
         border-right: 1px solid var(--el-menu-border-color);
+        
         .el-menu {
             border-right: none;
         }
@@ -128,13 +139,15 @@
         margin-bottom: 3%;
     }
     
-    .el-menu-item {
+    .sub-menu-title, .el-menu-item {
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-around;
-        .menu-icon {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
+    }
+    
+    .menu-icon {
+        width: 1.5rem;
+        height: 1.5rem;
     }
 </style>

@@ -8,7 +8,11 @@ export const useAsideStore =
                 isCollapse: false
             })
 
-            return {currentAside}
+            const resetActive = () => {
+                currentAside.value.active = ''
+            }
+
+            return {currentAside, resetActive}
         }, {
             persist: {
                 storage: sessionStorage,
