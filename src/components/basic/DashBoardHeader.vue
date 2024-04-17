@@ -88,10 +88,18 @@
                     />
                 </div>
                 
-                <div class="refreshBtn">
+                <div>
+                    <el-button
+                        icon="HomeFilled"
+                        circle
+                        @click="router.push('/main')"
+                    ></el-button>
+                </div>
+                
+                <div>
                     <el-button icon="Refresh"
                                circle
-                               @click="refresh"
+                               @click="router.go(0)"
                     />
                 </div>
                 
