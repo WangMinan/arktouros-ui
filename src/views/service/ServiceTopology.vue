@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, reactive, ref, watch } from "vue";
+    import { onMounted, ref, watch } from "vue";
     import { getNamespaceList, getServiceTopology } from "@/api/service/index.js";
     import * as echarts from 'echarts';
     import { useStorage } from '@vueuse/core'
@@ -33,7 +33,7 @@
                     draggable: true,
                     name: item.nodeObject.name,
                     category: item.nodeObject.nodeName,
-                    symbolSize: [20, 20] // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
+                    symbolSize: [50, 50] // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
                 }
             }
             return null
@@ -55,14 +55,12 @@
         drawServiceTopology()
     })
     
-    let serviceTopologyChart = reactive()
+    let serviceTopologyChart
     // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
     const checkIsDark = useStorage('theme-appearance', 'auto')
     const drawServiceTopology = () => {
         let option = {
             backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
-            animationEasingUpdate: "quinticInOut", // 数据更新动画的缓动效果。[ default: cubicOut ]    "quinticInOut"
-            animationDurationUpdate: 100, // 数据更新动画的时长。[ default: 300 ]
             title: {                    // 图表标题
                 text: "服务关系图",           // 标题文本
                 left : '3%',                    // 标题距离左侧边距
@@ -82,7 +80,15 @@
                     layout: 'force', // 力引导布局 否则要手动指定xy坐标
                     symbol: 'circle', // 标记的图形
                     data: nodes.value,
-                    links: calls.value
+                    links: calls.value,
+                    label: { // 关系对象上的标签
+                        normal: {
+                            show: true, // 是否显示标签
+                            position: "inside", // 标签位置:'top''left''right''bottom''inside''insideLeft''insideRight''insideTop''insideBottom''insideTopLeft''insideBottomLeft''insideTopRight''insideBottomRight'
+                        }
+                    },
+                    animationEasingUpdate: "quinticInOut", // 数据更新动画的缓动效果。[ default: cubicOut ]    "quinticInOut"
+                    animationDurationUpdate: 100, // 数据更新动画的时长。[ default: 300 ]
                 }
             ]
         }

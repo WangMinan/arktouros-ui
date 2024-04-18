@@ -23,3 +23,24 @@ export const getEndPointAndTraceIdListByServiceName = async (endpointsQueryDto) 
     }
     return null
 }
+
+export const getSpanTopology = async (traceId) => {
+    try {
+        const {data} = await axios.get('/trace/topology', {
+            params: {
+                traceId: traceId
+            }
+        })
+        if (data.code !== null && data.code === 2000) {
+            return data
+        } else if (data.code !== null){
+            ElMessage.error(`获取trace下拓扑失败, ${data.message}`)
+            return null
+        }
+        ElMessage.error('获取trace下拓扑失败')
+        return null
+    } catch (e) {
+        ElMessage.error(`获取trace下拓扑失败, ${e.message}`)
+    }
+    return null
+}

@@ -1,16 +1,18 @@
 <script setup>
-    import { reactive, ref } from "vue";
+    import { reactive, ref, watch } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
-    import { getEndPointAndTraceIdListByServiceName } from "@/api/trace/index.js";
+    import { getEndPointAndTraceIdListByServiceName, getSpanTopology } from "@/api/trace/index.js";
+    import { useStorage } from "@vueuse/core";
+    import * as echarts from 'echarts';
     
-    const traceId = ref()
+    const serviceName = ref()
     const traceIdCascaderProps = reactive({
         lazy: true,
         // 指定懒加载方法 node为当前点击的节点，resolve为数据加载完成的回调(必须调用)
         async lazyLoad(node, resolve) {
             // 之后回显的数据
             const nodes = []
-            const { level } = node
+            const {level} = node
             if (level === 0) {
                 // 请求namespace列表
                 const data = await getNamespaceList()
@@ -61,28 +63,126 @@
     const total = ref(0)
     
     const getEndPointAndTraceIdList = async () => {
+        // 先清空原有的内容
+        endpointTraceIdArr.value.splice(0, endpointTraceIdArr.value.length)
+        endpoints.splice(0, endpoints.length)
+        total.value = 0
         // 拿到叶子结点元素
-        endpointsQueryDto.serviceName = traceId.value[1]
+        endpointsQueryDto.serviceName = serviceName.value[1]
         const data = await getEndPointAndTraceIdListByServiceName(endpointsQueryDto)
         if (data === null) {
             return
         }
         total.value = data.result.length
         data.result.forEach(item => {
-            endpointTraceIdArr.push(item)
+            endpointTraceIdArr.value.push(item)
         })
-        endpointTraceIdArr.forEach(endPointTraceId => {
+        endpointTraceIdArr.value.forEach(endPointTraceId => {
             endpoints.push(endPointTraceId.endPoint)
         })
+        traceIdList.value = endpointTraceIdArr.value[0].traceIds
     }
     
-    const endpointTraceIdArr = reactive([
+    let traceIdList = ref([])
+    const endpointTraceIdArr = ref([
         {
             endPoint: {},
-            traceIds:[]
+            traceIds: []
         }
     ])
     const endpoints = reactive([])
+    
+    const handleSizeChange = async (newSize) => {
+        endpointsQueryDto.pageSize = newSize
+        await getEndPointAndTraceIdList()
+    }
+    
+    const handleCurrentChange = async (newPage) => {
+        endpointsQueryDto.pageNum = newPage
+        await getEndPointAndTraceIdList()
+    }
+    
+    const setTraceIdList = (endPoint) => {
+        // 从endpointTraceIdArr找
+        endpointTraceIdArr.value.forEach(item => {
+            if (item.endPoint === endPoint) {
+                traceIdList.value = item.traceIds
+            }
+        })
+    }
+    
+    const traceId = ref()
+    
+    const topology = ref({
+        nodes: [
+            {nodeObject: {}}
+        ],
+        calls: {
+            source: {nodeObject: {}},
+            target: {nodeObject: {}}
+        }
+    })
+    
+    const getTopology = async () => {
+        if (traceId.value === '' || traceId.value === undefined) {
+            return
+        }
+        // 拿到traceId
+        const data = await getSpanTopology(traceId.value)
+        if (data === null) {
+            return
+        }
+        topology.value = data.result
+    }
+    
+    let spanTopologyChart
+    // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
+    const checkIsDark = useStorage('theme-appearance', 'auto')
+    // 使用自定义监听器来重新绘制图表
+    watch(checkIsDark, () => {
+        if (spanTopologyChart) {
+            spanTopologyChart.dispose(); //销毁
+        }
+        drawSpanTopology()
+    })
+    
+    const drawSpanTopology = () => {
+        let option = {
+            backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove'
+            },
+            series:[
+                {
+                    type: 'tree',
+                    symbol: 'circle', // 标记的图形
+                    roam: true,//移动+放大
+                    expandAndCollapse: true,
+                    animationDuration: 550,
+                    animationDurationUpdate: 750,
+                    label: {
+                        position: 'left',
+                        verticalAlign: 'middle',
+                        align: 'right',
+                        fontSize: 9
+                    },
+                    leaves: {
+                        label: {
+                            position: 'right',
+                            verticalAlign: 'middle',
+                            align: 'left'
+                        }
+                    },
+                }
+            ]
+        }
+        spanTopologyChart =
+            echarts.init(
+                document.getElementById('trace-topology-div'),
+                checkIsDark.value === 'dark' ? 'dark' : 'light')
+        spanTopologyChart.setOption(option)
+    }
 </script>
 
 <template>
@@ -103,7 +203,7 @@
             <div class="cascader-div">
                 <el-cascader
                     placeholder="请选择对应服务"
-                    v-model="traceId"
+                    v-model="serviceName"
                     style="width: 40%"
                     clearable
                     :props="traceIdCascaderProps"
@@ -112,27 +212,28 @@
                 />
             </div>
             <el-divider/>
-            <el-row style="margin-top: 2%;">
-                <el-col :span="10">
-                    <div>Trace Endpoints</div>
+            <el-row :gutter="10" style="margin-top: 2%;">
+                <el-col :span="8">
+                    <div>追踪端点信息</div>
                     <div class="endpoint-div">
                         <div class="table-div">
                             <el-table :data="endpoints"
                                       stripe
                             >
+                                <el-table-column prop="serviceName" label="服务名称"/>
                                 <el-table-column prop="ip" label="IP地址"/>
                                 <el-table-column prop="port" label="端口号"/>
                                 <el-table-column prop="latency" label="时延"/>
-                                <el-table-column prop="serviceName" label="服务名称"/>
-                                <el-table-column fixed="right" label="操作">
+                                <el-table-column fixed="right" label="绘图">
                                     <template #default="scope">
                                         <el-tooltip effect="light"
-                                                    content="查看链路追踪信息" placement="top"
+                                                    content="查看Endpoint所在链路信息"
+                                                    placement="top"
                                                     :enterable="false">
                                             <el-button type="primary" circle size="small"
-                                                       @click="getServiceDetail(scope.row.id)">
+                                                       @click="setTraceIdList(scope.row)">
                                                 <el-icon>
-                                                    <InfoFilled/>
+                                                    <ArrowRightBold/>
                                                 </el-icon>
                                             </el-button>
                                         </el-tooltip>
@@ -147,15 +248,30 @@
                                 :page-sizes="[2, 5, 10, 20]"
                                 layout="total, pager, sizes"
                                 :total="total"
-                                pager-count="5"
+                                :pager-count="5"
                                 @size-change="handleSizeChange"
                                 @current-change="handleCurrentChange"
                             />
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="14">
-                
+                <el-col :span="16">
+                    <div>
+                        <el-select v-model="traceId"
+                                   placeholder="请在左侧选择Endpoint后，选择TraceId"
+                                   style="width: 40%"
+                                   clearable
+                                   @change="getTopology"
+                        >
+                            <el-option
+                                v-for="item in traceIdList"
+                                :key="item"
+                                :label="item"
+                                :value="item"
+                            />
+                        </el-select>
+                    </div>
+                    <div id="trace-topology-div"></div>
                 </el-col>
             </el-row>
         </el-card>
@@ -197,6 +313,12 @@
                     display: flex;
                     justify-content: center;
                 }
+            }
+            
+            #trace-topology-div {
+                margin-top: 2%;
+                width: 100%;
+                height: 400px;
             }
         }
     }
