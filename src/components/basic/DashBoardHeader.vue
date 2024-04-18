@@ -49,7 +49,6 @@
                 `circle(0px at ${x}px ${y}px)`,
                 `circle(${endRadius}px at ${x}px ${y}px)`,
             ]
-            console.log(clipPath)
             // 这是一个动画效果的实现，通过改变`clipPath`属性的值来实现动画效果。`document.documentElement`表示整个HTML文档的根元素。
             document.documentElement.animate(
                 {

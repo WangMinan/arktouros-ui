@@ -65,7 +65,8 @@
                         <img class="menu-icon"
                              src="@/assets/images/side-icons/service.svg"
                              alt="service"/>
-                        <span>服务</span>
+                        <!-- 这玩意不会跟着collapse做联动 需要手动调一下 -->
+                        <span v-if="!isCollapse">服务</span>
                     </div>
                 </template>
                 <el-menu-item index="/main/service/table">

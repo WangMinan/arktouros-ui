@@ -56,12 +56,13 @@
     })
     
     let serviceTopologyChart = reactive()
+    // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
     const checkIsDark = useStorage('theme-appearance', 'auto')
     const drawServiceTopology = () => {
         let option = {
             backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
-            animationDurationUpdate: 1500,
-            animationEasingUpdate: 'quinticInOut',
+            animationEasingUpdate: "quinticInOut", // 数据更新动画的缓动效果。[ default: cubicOut ]    "quinticInOut"
+            animationDurationUpdate: 100, // 数据更新动画的时长。[ default: 300 ]
             title: {                    // 图表标题
                 text: "服务关系图",           // 标题文本
                 left : '3%',                    // 标题距离左侧边距
@@ -76,13 +77,12 @@
             series: [
                 {
                     type: 'graph',
+                    focusNodeAdjacency: true,   // 是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。[ default: false ]
                     roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
                     layout: 'force', // 力引导布局 否则要手动指定xy坐标
                     symbol: 'circle', // 标记的图形
                     data: nodes.value,
-                    links: calls.value,
-                    animationEasingUpdate: "quinticInOut", // 数据更新动画的缓动效果。[ default: cubicOut ]    "quinticInOut"
-                    animationDurationUpdate: 100 // 数据更新动画的时长。[ default: 300 ]
+                    links: calls.value
                 }
             ]
         }

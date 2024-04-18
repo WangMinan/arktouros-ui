@@ -74,6 +74,7 @@
 
 <template>
     <div class="security-main-container">
+        <!-- 面包屑 -->
         <el-row>
             <el-breadcrumb separator-icon="ArrowRight">
                 <el-breadcrumb-item>
@@ -84,6 +85,7 @@
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </el-row>
+        <!-- 表格card -->
         <el-card class="table-card">
             <div class="search-bar">
                 <el-row :gutter="15">
@@ -126,6 +128,7 @@
                     </el-col>
                 </el-row>
             </div>
+            <el-divider/>
             <div class="table-div">
                 <el-table :data="serviceList"
                           stripe
@@ -156,7 +159,7 @@
                     v-model:current-page="baseQueryDto.pageNum"
                     v-model:page-size="baseQueryDto.pageSize"
                     :page-sizes="[2, 5, 10, 20]"
-                    layout="total, sizes, prev, pager, next, jumper"
+                    layout="total, prev, pager, next, sizes"
                     :total="total"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
