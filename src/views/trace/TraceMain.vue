@@ -67,6 +67,11 @@
         endpointTraceIdArr.value.splice(0, endpointTraceIdArr.value.length)
         endpoints.splice(0, endpoints.length)
         total.value = 0
+        if (spanTopologyChart) {
+            spanTopologyChart.dispose();
+        }
+        traceIdList.value = []
+        traceId.value = ''
         // 拿到叶子结点元素
         endpointsQueryDto.serviceName = serviceName.value[1]
         const data = await getEndPointAndTraceIdListByServiceName(endpointsQueryDto)
@@ -114,13 +119,10 @@
     const traceId = ref()
     
     const topology = ref({
-        nodes: [
-            {nodeObject: {}}
-        ],
-        calls: {
-            source: {nodeObject: {}},
-            target: {nodeObject: {}}
-        }
+        name: '',
+        value: '',
+        collapsed: false,
+        children: []
     })
     
     const getTopology = async () => {
@@ -133,6 +135,7 @@
             return
         }
         topology.value = data.result
+        drawSpanTopology()
     }
     
     let spanTopologyChart
@@ -174,6 +177,7 @@
                             align: 'left'
                         }
                     },
+                    data: [topology.value]
                 }
             ]
         }
