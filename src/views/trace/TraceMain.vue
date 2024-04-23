@@ -1,11 +1,14 @@
 <script setup>
-    import { reactive, ref, watch } from "vue";
+    import { onMounted, reactive, ref, watch } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
     import { getEndPointAndTraceIdListByServiceName, getSpanTopology } from "@/api/trace/index.js";
     import { useStorage } from "@vueuse/core";
     import * as echarts from 'echarts';
+    import { useRouter } from "vue-router";
+    
     
     const serviceName = ref()
+    const router = useRouter()
     const traceIdCascaderProps = reactive({
         lazy: true,
         // 指定懒加载方法 node为当前点击的节点，resolve为数据加载完成的回调(必须调用)
@@ -58,6 +61,24 @@
         serviceName: '',
         pageNum: 1,
         pageSize: 10
+    })
+    
+    onMounted(async () => {
+        if (router.currentRoute.value.query.serviceName) {
+            endpointsQueryDto.serviceName = router.currentRoute.value.query.serviceName
+            serviceName.value = router.currentRoute.value.query.serviceName
+            await getEndPointAndTraceIdList()
+        }
+        if (router.currentRoute.value.query.traceId) {
+            // 如果traceIdList没有这个值 写入
+            if (!traceIdList.value.includes(router.currentRoute.value.query.traceId)) {
+                traceIdList.value.push(router.currentRoute.value.query.traceId)
+            }
+            traceId.value = router.currentRoute.value.query.traceId
+        }
+        if(router.currentRoute.value.query.serviceName && router.currentRoute.value.query.traceId) {
+            drawSpanTopology()
+        }
     })
     
     const total = ref(0)
@@ -151,12 +172,12 @@
     
     const drawSpanTopology = () => {
         let option = {
-            backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
+            backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
             tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove'
             },
-            series:[
+            series: [
                 {
                     type: 'tree',
                     symbol: 'circle', // 标记的图形

@@ -9,8 +9,14 @@
         }
         // 组织成对象的list {value:"xx"}
         const results = data.result.map(item => {
+            if (item) {
+                return {
+                    value: item
+                }
+            }
+            // 这个位置在上行的时候要重新做处理的
             return {
-                value: item
+                value: 'null'
             }
         })
         cb(results)
@@ -37,6 +43,9 @@
             return
         }
         // 将data.result转移到serviceList中
+        if (baseQueryDto.namespace === 'null') {
+            baseQueryDto.namespace = ''
+        }
         total.value = parseInt(data.result.total)
         const tmpList = data.result.data
         // tmpList中每个对象的status属性 如果是true 改为在线 如果为false 改为离线或未知
