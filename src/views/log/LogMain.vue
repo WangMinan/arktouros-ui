@@ -3,7 +3,7 @@
     import { getServiceList } from "@/api/service/index.js";
     import { getLogList, getSeverityTextList } from "@/api/log/index.js";
     import { useRouter } from "vue-router";
-    import {ElMessage} from "element-plus";
+    import { ElMessage } from "element-plus";
     
     const router = useRouter()
     const total = ref(0)
