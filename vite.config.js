@@ -1,8 +1,9 @@
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import topLevelAwait from 'vite-plugin-top-level-await'
+import Components from 'unplugin-vue-components/vite'
+import { VantResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,6 +17,10 @@ export default defineConfig({
             promiseExportName: '__tla',
             // The function to generate import names of top-level await promise in each chunk module
             promiseImportName: i => `__tla_${i}`
+        }),
+        // 配置vant组件按需引入
+        Components({
+            resolvers: [VantResolver()]
         })
     ],
     server: {
@@ -45,3 +50,4 @@ export default defineConfig({
         }
     }
 })
+
