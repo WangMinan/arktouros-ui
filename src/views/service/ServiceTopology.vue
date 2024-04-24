@@ -61,10 +61,18 @@
     const drawServiceTopology = () => {
         let option = {
             backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
-            title: {                    // 图表标题
-                text: "服务关系图",           // 标题文本
-                left : '3%',                    // 标题距离左侧边距
+            title: {
+                text: "服务关系图", // 标题文本
+                left : '3%', // 标题距离左侧边距
                 top : '3%'
+            },
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove',
+                backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
+                textStyle: {
+                    color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
+                }
             },
             label: {                // 关系对象上的标签
                 normal: {

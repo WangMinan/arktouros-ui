@@ -1,4 +1,4 @@
-import axios from '../index.js'
+import axios from "../index.js"
 import { ElMessage } from "element-plus";
 
 export const getNamespaceList = async (query) => {

@@ -1,6 +1,6 @@
 <script setup>
     import { onMounted, reactive, ref } from "vue";
-    import { getServiceList } from "@/api/service/index.js";
+    import { getNamespaceList, getServiceList } from "@/api/service/index.js";
     import { getLogList, getSeverityTextList } from "@/api/log/index.js";
     import { useRouter } from "vue-router";
     import { ElMessage } from "element-plus";
@@ -8,6 +8,7 @@
     const router = useRouter()
     const total = ref(0)
     const logList = ref([])
+    const serviceName = ref()
     const startAndStopTime = ref([])
     const logQueryDto = ref({
         pageNum: 1,
@@ -20,15 +21,10 @@
         startTimestamp: 0,
         endTimestamp: 0
     })
-    const baseQueryDto = reactive({
-        query: '',
-        namespace: '',
-        pageNum: 1,
-        pageSize: 10
-    })
     
     const toggleLogList = async () => {
-        const tmpLogQueryDto = logQueryDto.value
+        // 深拷贝
+        const tmpLogQueryDto = JSON.parse(JSON.stringify(logQueryDto.value))
         if (tmpLogQueryDto.serviceName === 'null') {
             tmpLogQueryDto.serviceName = ''
         }
@@ -60,28 +56,6 @@
     const handleCurrentChange = async (newPage) => {
         logQueryDto.value.pageNum = newPage
         await toggleLogList()
-    }
-    
-    const queryServiceName = async (queryString, cb) => {
-        baseQueryDto.query = queryString
-        const data = await getServiceList(baseQueryDto)
-        if (data === null) {
-            cb([])
-            return
-        }
-        // 组织成对象的list {value:"xx"}
-        const results = data.result.data.map(item => {
-            if (item.name) {
-                return {
-                    value: item.name
-                }
-            }
-            // 这个位置在上行的时候要重新做处理的
-            return {
-                value: 'null'
-            }
-        })
-        cb(results)
     }
     
     const querySeverityText = async (queryString, cb) => {
@@ -155,6 +129,61 @@
         }
         await router.push(`/main/trace?serviceName=${log.serviceName}&traceId=${log.traceId}`)
     }
+    
+    const traceIdCascaderProps = reactive({
+        lazy: true,
+        // 指定懒加载方法 node为当前点击的节点，resolve为数据加载完成的回调(必须调用)
+        async lazyLoad(node, resolve) {
+            // 之后回显的数据
+            const nodes = []
+            const {level} = node
+            if (level === 0) {
+                // 请求namespace列表
+                const data = await getNamespaceList()
+                if (data === null) {
+                    return
+                }
+                // 组织成对象的list {value:"xx"}
+                data.result.map(item => {
+                    return {
+                        leaf: false,
+                        value: item,
+                        label: item
+                    }
+                }).forEach(item => {
+                    nodes.push(item)
+                })
+            } else if (level === 1) {
+                // 根据选中内容请求service列表
+                const data = await getServiceList({
+                    query: '',
+                    namespace: node.value,
+                    pageNum: 1,
+                    pageSize: 1000
+                })
+                if (data === null) {
+                    return
+                }
+                // 组织成对象的list {value:"xx"}
+                data.result.data.map(item => {
+                    return {
+                        leaf: true,
+                        value: item.name,
+                        label: item.name === '' ? 'null' : item.name
+                    }
+                }).forEach(item => {
+                    nodes.push(item)
+                })
+            }
+            resolve(nodes)
+        }
+    })
+    
+    const setServiceName = () => {
+        if (serviceName.value) {
+            logQueryDto.value.serviceName = serviceName.value[1]
+        }
+    }
 </script>
 
 <template>
@@ -175,14 +204,14 @@
             <div class="search-area">
                 <el-form :inline="true" :model="logQueryDto" class="demo-form-inline">
                     <el-form-item label="服务名称">
-                        <el-autocomplete
-                            class="auto-complete-input"
-                            v-model="logQueryDto.serviceName"
-                            :fetch-suggestions="queryServiceName"
+                        <el-cascader
+                            placeholder="请选择命名空间→服务名称"
+                            v-model="serviceName"
                             clearable
-                            placeholder="请输入服务名称"
-                        >
-                        </el-autocomplete>
+                            :props="traceIdCascaderProps"
+                            :show-all-levels="false"
+                            @change="setServiceName"
+                        />
                     </el-form-item>
                     <el-form-item label="traceId">
                         <el-input v-model="logQueryDto.traceId"

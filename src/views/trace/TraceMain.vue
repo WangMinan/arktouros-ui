@@ -3,7 +3,7 @@
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
     import { getEndPointAndTraceIdListByServiceName, getSpanTopology } from "@/api/trace/index.js";
     import { useStorage } from "@vueuse/core";
-    import * as echarts from 'echarts';
+    import * as echarts from "echarts";
     import { useRouter } from "vue-router";
     
     
@@ -175,7 +175,11 @@
             backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
             tooltip: {
                 trigger: 'item',
-                triggerOn: 'mousemove'
+                triggerOn: 'mousemove',
+                backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
+                textStyle: {
+                    color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
+                }
             },
             series: [
                 {

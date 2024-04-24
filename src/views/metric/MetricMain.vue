@@ -1,11 +1,342 @@
 <script setup>
-
+    import { onMounted, reactive, ref, watch } from "vue";
+    import { getNamespaceList, getServiceList } from "@/api/service/index.js";
+    import { getMetricList } from "@/api/metric/index.js";
+    import { useStorage } from "@vueuse/core";
+    import * as echarts from "echarts";
+    
+    const metricQueryDto = ref({
+        serviceName: '',
+        metricNameLimit: 0,
+        startTimeStamp: 0,
+        endTimeStamp: 0,
+    })
+    
+    const startAndStopTime = ref([])
+    
+    const traceIdCascaderProps = reactive({
+        lazy: true,
+        // 指定懒加载方法 node为当前点击的节点，resolve为数据加载完成的回调(必须调用)
+        async lazyLoad(node, resolve) {
+            // 之后回显的数据
+            const nodes = []
+            const {level} = node
+            if (level === 0) {
+                // 请求namespace列表
+                const data = await getNamespaceList()
+                if (data === null) {
+                    return
+                }
+                // 组织成对象的list {value:"xx"}
+                data.result.map(item => {
+                    return {
+                        leaf: false,
+                        value: item,
+                        label: item
+                    }
+                }).forEach(item => {
+                    nodes.push(item)
+                })
+            } else if (level === 1) {
+                // 根据选中内容请求service列表
+                const data = await getServiceList({
+                    query: '',
+                    namespace: node.value,
+                    pageNum: 1,
+                    pageSize: 1000
+                })
+                if (data === null) {
+                    return
+                }
+                // 组织成对象的list {value:"xx"}
+                data.result.data.map(item => {
+                    return {
+                        leaf: true,
+                        value: item.name,
+                        label: item.name === '' ? 'null' : item.name
+                    }
+                }).forEach(item => {
+                    nodes.push(item)
+                })
+            }
+            resolve(nodes)
+        }
+    })
+    
+    const serviceName = ref()
+    
+    const metricList = ref([{
+        name: '',
+        serviceName: '',
+        metricType: '',
+        metrics: []
+    }])
+    
+    const setServiceName = () => {
+        if (serviceName.value) {
+            metricQueryDto.value.serviceName = serviceName.value[1]
+        }
+    }
+    
+    const toggleMetrics = async () => {
+        if (metricCharts) {
+            // metricTopologyCharts.dispose(); //销毁
+            metricCharts.forEach(
+                chart => chart.dispose()
+            )
+        }
+        // 数值预处理 深拷贝
+        const tmpQueryDto = JSON.parse(JSON.stringify(metricQueryDto.value))
+        if (tmpQueryDto.serviceName === 'null') {
+            tmpQueryDto.serviceName = ''
+        }
+        if (tmpQueryDto.metricNameLimit === 0) {
+            tmpQueryDto.metricNameLimit = null
+        }
+        if (startAndStopTime.value.length === 2) {
+            tmpQueryDto.startTimeStamp = Date.parse(startAndStopTime.value[0])
+            tmpQueryDto.endTimeStamp = Date.parse(startAndStopTime.value[1])
+        } else {
+            tmpQueryDto.startTimeStamp = null
+            tmpQueryDto.endTimeStamp = null
+        }
+        const data = await getMetricList(tmpQueryDto)
+        if (data === null) {
+            return
+        }
+        if (data.result && data.result.length !== 0) {
+            isMetricListEmpty.value = false
+            metricList.value = data.result
+            // 等待v-for渲染完成
+            while (!document.getElementById(
+                'metric-graph-' + (metricList.value.length - 1))) {
+                await new Promise(resolve => setTimeout(resolve, 100))
+            }
+            for (let i = 0; i < metricList.value.length; i++) {
+                try {
+                    drawMetric(metricList.value[i], i)
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+        } else {
+            isMetricListEmpty.value = true
+        }
+    }
+    
+    const isMetricListEmpty = ref(true)
+    
+    let metricCharts = []
+    // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
+    const checkIsDark = useStorage('theme-appearance', 'auto')
+    // 使用自定义监听器来重新绘制图表
+    watch(checkIsDark, () => {
+        if (metricCharts) {
+            // metricTopologyCharts.dispose(); //销毁
+            metricCharts.forEach(
+                chart => chart.dispose()
+            )
+        }
+        for (let i = 0; i < metricList.value.length; i++) {
+            try {
+                drawMetric(metricList.value[i], i)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+    })
+    
+    onMounted(() => {
+        if (metricCharts) {
+            // metricTopologyCharts.dispose(); //销毁
+            metricCharts.forEach(
+                chart => chart.dispose()
+            )
+        }
+    })
+    
+    const drawMetric = (metric, index) => {
+        let option = {
+            backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
+            title: {
+                text: metric.name,
+                textStyle: {
+                    fontWeight: 'normal',
+                    fontSize: 12
+                },
+                subtext: 'service: ' + metric.serviceName,
+                subtextStyle: {
+                    fontSize: 10
+                }
+            },
+            tooltip: {
+                trigger: 'item', // 触发类型，可选值: 'item'（数据项触发），'axis'（坐标轴触发），'none'（不触发）
+                axisPointer: {
+                    type: 'cross', // 设置触发提示的指示器类型
+                },
+                backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
+                textStyle: {
+                    color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
+                }
+            }
+        }
+        if (metric.metricType === 'GAUGE') {
+            option.xAxis = {
+                type: 'category',
+                data: metric.metrics.map(item => timestampToTime(item.timestamp))
+            }
+            option.yAxis = {
+                type: 'value'
+            }
+            option.series = [{
+                data: metric.metrics.map(item => Number(item.value)),
+                type: 'line'
+            }]
+        } else if (metric.metricType === 'HISTOGRAM') {
+            let buckets = []
+            // 遍历buckets
+            for (const key in metric.metrics[0].buckets) {
+                buckets.push({
+                    key: key,
+                    value: metric.metrics[0].buckets[key]
+                })
+            }
+            // 按照key的数值大小对buckets进行排序
+            buckets.sort((a, b) => a.key - b.key)
+            option.xAxis = {
+                type: 'category',
+                data: buckets.map(item => item.key)
+            }
+            option.yAxis = {
+                type: 'value'
+            }
+            option.series = [{
+                data: buckets.map(item => Number(item.value)),
+                type: 'bar'
+            }]
+        }
+        let metricChart = echarts.init(
+            document.getElementById('metric-graph-' + index),
+            checkIsDark.value === 'dark' ? 'dark' : 'light')
+        metricChart.setOption(option)
+        metricCharts.push(metricChart)
+    }
+    
+    const // 时间戳：1637244864707
+        /* 时间戳转换为时间 */
+        timestampToTime = (timestamp) => {
+            if (timestamp === '0') {
+                return 'unknown'
+            }
+            // 将timestamp调节到13位 多删少补
+            if (timestamp.length < 13) {
+                timestamp = timestamp + '000'
+            } else if (timestamp.length > 13) {
+                timestamp = timestamp.substring(0, 13)
+            }
+            
+            timestamp = Number(timestamp)
+            
+            let date = new Date(timestamp);
+            let Y = date.getFullYear() + '-';
+            let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+            let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
+            let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+            let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+            let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+            return Y + M + D + h + m + s;
+        }
 </script>
 
 <template>
-    <div>metric</div>
+    <!-- 面包屑 -->
+    <el-row>
+        <el-breadcrumb separator-icon="ArrowRight">
+            <el-breadcrumb-item>
+                <a href="/main">主页</a>
+            </el-breadcrumb-item>
+            <el-breadcrumb-item>
+                <a href="/main/metric">数值概览</a>
+            </el-breadcrumb-item>
+        </el-breadcrumb>
+    </el-row>
+    <el-card class="metric-card">
+        <!-- 搜索条 -->
+        <!-- 搜索区 -->
+        <div class="search-area">
+            <el-form :inline="true" :model="metricQueryDto" class="demo-form-inline">
+                <el-form-item label="服务名称">
+                    <el-cascader
+                        placeholder="请选择命名空间→服务名称"
+                        v-model="serviceName"
+                        clearable
+                        :props="traceIdCascaderProps"
+                        :show-all-levels="false"
+                        @change="setServiceName"
+                    />
+                </el-form-item>
+                <el-form-item label="图表数量">
+                    <el-tooltip effect="light"
+                                content="置0时表示搜索服务下所有数值记录"
+                                placement="top"
+                                :enterable="false">
+                        <el-input-number
+                            :min="0"
+                            v-model="metricQueryDto.metricNameLimit"
+                        />
+                    </el-tooltip>
+                </el-form-item>
+                <el-form-item label="起止时间">
+                    <el-date-picker
+                        v-model="startAndStopTime"
+                        type="datetimerange"
+                        range-separator="到"
+                        start-placeholder="开始时间"
+                        end-placeholder="结束时间"
+                    />
+                </el-form-item>
+                
+                <el-form-item>
+                    <el-button type="primary" @click="toggleMetrics">搜索</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <el-divider/>
+        <!-- 图标板 -->
+        <div class="graph-div" v-if="!isMetricListEmpty">
+            <div class="graph-card"
+                 v-for="(metricVo, index) in metricList"
+                 :key="index">
+                <el-tooltip effect="light"
+                            v-if="metricVo.metrics[0]"
+                            :content="metricVo.metrics[0].description"
+                            placement="top"
+                            :enterable="false">
+                    <div class="graph-item" :id="'metric-graph-' + index"></div>
+                </el-tooltip>
+            </div>
+        </div>
+    </el-card>
 </template>
 
 <style scoped lang="less">
-
+    .metric-card {
+        margin-top: 2%;
+        
+        .graph-div {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 10px;
+            
+            .graph-card {
+                height: 240px;
+                border: 1px solid var(--el-menu-border-color);
+                
+                .graph-item {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+    }
 </style>
