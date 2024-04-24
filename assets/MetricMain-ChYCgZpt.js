@@ -1,0 +1,1 @@
+import{_ as e,__tla as _}from"./index-1_e2lE3f.js";import{n as l,o as n,__tla as o}from"./.pnpm-BUSZVuX4.js";let t,c=Promise.all([(()=>{try{return _}catch{}})(),(()=>{try{return o}catch{}})()]).then(async()=>{const r={};function a(s,i){return n(),l("div",null,"metric")}t=e(r,[["render",a]])});export{c as __tla,t as default};
