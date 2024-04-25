@@ -4,6 +4,7 @@
     import { getMetricList } from "@/api/metric/index.js";
     import { useStorage } from "@vueuse/core";
     import * as echarts from "echarts";
+    import { ElMessage } from "element-plus";
     
     const metricQueryDto = ref({
         serviceName: '',
@@ -85,6 +86,9 @@
                 chart => chart.dispose()
             )
         }
+        // 清空 metricList
+        metricList.value = []
+        isMetricListEmpty.value = true
         // 数值预处理 深拷贝
         const tmpQueryDto = JSON.parse(JSON.stringify(metricQueryDto.value))
         if (tmpQueryDto.serviceName === 'null') {
@@ -116,7 +120,7 @@
                 try {
                     drawMetric(metricList.value[i], i)
                 } catch (e) {
-                    console.error(e)
+                    ElMessage.error(e)
                 }
             }
         } else {
@@ -141,7 +145,7 @@
             try {
                 drawMetric(metricList.value[i], i)
             } catch (e) {
-                console.error(e)
+                ElMessage.error(e)
             }
         }
     })
@@ -243,7 +247,7 @@
                     max: 1
                 }
             }
-        } else if (metric.metricType === 'HISTOGRAM') {
+        } else if (metric.metricType === 'HISTOGRAM' || metric.metricType === 'SUMMARY') {
             let buckets = []
             // 遍历buckets
             for (const key in metric.metrics[0].buckets) {
