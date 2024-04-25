@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, ref, watch } from "vue";
+    import { onBeforeUnmount, onMounted, ref, watch } from "vue";
     import { getNamespaceList, getServiceTopology } from "@/api/service/index.js";
     import * as echarts from 'echarts';
     import { useStorage } from '@vueuse/core'
@@ -50,10 +50,20 @@
         })
     }
     
+    let resizeObserver;
+    
     onMounted(async () => {
         await getTopology()
         drawServiceTopology()
+        window.addEventListener('resize', handleResize);
+        resizeObserver = new ResizeObserver(() => handleResize);
+        resizeObserver.observe(document.getElementById('service-topology-dom'));
     })
+    
+    onBeforeUnmount(() => {
+        window.removeEventListener('resize', handleResize);
+        resizeObserver.disconnect();
+    });
     
     let serviceTopologyChart
     // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
@@ -63,8 +73,6 @@
             backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
             title: {
                 text: "服务关系图", // 标题文本
-                left : '3%', // 标题距离左侧边距
-                top : '3%'
             },
             tooltip: {
                 trigger: 'item',
@@ -105,6 +113,13 @@
         );
         serviceTopologyChart.setOption(option)
     }
+    
+    const handleResize = () => {
+        if (!serviceTopologyChart) {
+            return;
+        }
+        serviceTopologyChart.resize()
+    };
     
     // 使用自定义监听器来重新绘制图表
     watch(checkIsDark, () => {

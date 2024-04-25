@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, reactive, ref, watch } from "vue";
+    import { onBeforeUnmount, onMounted, reactive, ref, watch, } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
     import { getMetricList } from "@/api/metric/index.js";
     import { useStorage } from "@vueuse/core";
@@ -146,6 +146,8 @@
         }
     })
     
+    let resizeObserver;
+    
     onMounted(() => {
         if (metricCharts) {
             // metricTopologyCharts.dispose(); //销毁
@@ -153,7 +155,24 @@
                 chart => chart.dispose()
             )
         }
+        window.addEventListener('resize', handleResize);
+        resizeObserver = new ResizeObserver(() => handleResize);
+        resizeObserver.observe(document.getElementById('metricCardRef'));
     })
+    
+    onBeforeUnmount(() => {
+        window.removeEventListener('resize', handleResize);
+        resizeObserver.disconnect();
+    });
+    
+    const handleResize = () => {
+        if (!metricCharts) {
+            return;
+        }
+        metricCharts.forEach(chart => {
+            chart.resize();
+        });
+    };
     
     const drawMetric = (metric, index) => {
         let option = {
@@ -180,18 +199,50 @@
                 }
             }
         }
-        if (metric.metricType === 'GAUGE') {
-            option.xAxis = {
-                type: 'category',
-                data: metric.metrics.map(item => timestampToTime(item.timestamp))
+        if (metric.metricType === 'GAUGE' || metric.metricType === 'COUNTER') {
+            // 分情况 如果metric.metrics只有一个数据则使用仪表盘 否则使用线形图
+            if (metric.metrics.length >= 2) {
+                option.xAxis = {
+                    type: 'category',
+                    data: metric.metrics.map(item => timestampToTime(item.timestamp))
+                }
+                option.yAxis = {
+                    type: 'value'
+                }
+                option.series = [{
+                    data: metric.metrics.map(item => Number(item.value)),
+                    type: 'line'
+                }]
+            } else {
+                console.log(metric.metrics[0].value)
+                // 富文本
+                option.series = [{
+                    type: 'scatter',
+                    symbolSize: 1,
+                    data: [
+                        {
+                            value: [0, 0],
+                            label: {
+                                show: true,
+                                formatter: metric.metrics[0].value + '',
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                                // 红色字体 注意暗黑模式
+                                color: checkIsDark.value === 'dark' ? '#ff0000' : '#992233'
+                            }
+                        }],
+                }]
+                option.xAxis = {
+                    show: false,
+                    min: -1,
+                    max: 1
+                }
+                option.yAxis = {
+                    show: false,
+                    min: -1,
+                    max: 1
+                }
             }
-            option.yAxis = {
-                type: 'value'
-            }
-            option.series = [{
-                data: metric.metrics.map(item => Number(item.value)),
-                type: 'line'
-            }]
         } else if (metric.metricType === 'HISTOGRAM') {
             let buckets = []
             // 遍历buckets
@@ -260,7 +311,7 @@
             </el-breadcrumb-item>
         </el-breadcrumb>
     </el-row>
-    <el-card class="metric-card">
+    <el-card class="metric-card" id="metricCardRef">
         <!-- 搜索条 -->
         <!-- 搜索区 -->
         <div class="search-area">

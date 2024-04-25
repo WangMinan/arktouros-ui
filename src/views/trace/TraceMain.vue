@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, reactive, ref, watch } from "vue";
+    import { onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
     import { getEndPointAndTraceIdListByServiceName, getSpanTopology } from "@/api/trace/index.js";
     import { useStorage } from "@vueuse/core";
@@ -63,6 +63,15 @@
         pageSize: 10
     })
     
+    let resizeObserver;
+    
+    const handleResize = () => {
+        if (!spanTopologyChart) {
+            return;
+        }
+        spanTopologyChart.resize()
+    };
+    
     onMounted(async () => {
         if (router.currentRoute.value.query.serviceName) {
             endpointsQueryDto.serviceName = router.currentRoute.value.query.serviceName
@@ -79,7 +88,15 @@
         if(router.currentRoute.value.query.serviceName && router.currentRoute.value.query.traceId) {
             drawSpanTopology()
         }
+        window.addEventListener('resize', handleResize);
+        resizeObserver = new ResizeObserver(() => handleResize);
+        resizeObserver.observe(document.getElementById('trace-topology-div'));
     })
+    
+    onBeforeUnmount(() => {
+        window.removeEventListener('resize', handleResize);
+        resizeObserver.disconnect();
+    });
     
     const total = ref(0)
     
