@@ -38,13 +38,13 @@
     })
     
     const toggleServiceList = async () => {
-        const data = await getServiceList(baseQueryDto)
-        if (data === null) {
-            return
-        }
         // 将data.result转移到serviceList中
         if (baseQueryDto.namespace === 'null') {
             baseQueryDto.namespace = ''
+        }
+        const data = await getServiceList(baseQueryDto)
+        if (data === null) {
+            return
         }
         total.value = parseInt(data.result.total)
         const tmpList = data.result.data
@@ -54,6 +54,9 @@
                 item.status = '在线'
             } else {
                 item.status = '离线或未知'
+            }
+            if (!item.name) {
+                item.name = 'null'
             }
         })
         serviceList.value = tmpList

@@ -35,6 +35,11 @@
         if (startAndStopTime.value.length === 2) {
             tmpLogQueryDto.startTimestamp = Date.parse(startAndStopTime.value[0])
             tmpLogQueryDto.endTimestamp = Date.parse(startAndStopTime.value[1])
+        } else if (import.meta.env.VITE_NODE_ENV === 'production') {
+            ElMessage.warning("当前为正式环境, 时间范围置空时默认获取近半个小时内的日志")
+            const now = new Date()
+            tmpLogQueryDto.startTimestamp = now.getTime() - 30 * 60 * 1000
+            tmpLogQueryDto.endTimestamp = now.getTime()
         } else {
             // 没输入时间 置空字段
             tmpLogQueryDto.startTimestamp = null
@@ -45,6 +50,11 @@
             return
         }
         total.value = parseInt(data.result.total)
+        data.result.data.forEach(item => {
+            if (!item.serviceName) {
+                item.serviceName = 'null'
+            }
+        })
         logList.value = data.result.data
     }
     
@@ -252,9 +262,10 @@
             <el-divider/>
             <!-- 日志展示区 -->
             <el-row :gutter="5" v-for="log in logList" :key="log">
+                <el-col :span="2">{{ log.serviceName }}</el-col>
                 <el-col :span="3">{{ timestampToTime(log.timestamp) }}</el-col>
                 <el-col :span="1">{{ log.severityText }}</el-col>
-                <el-col :span="18">{{ log.content }}</el-col>
+                <el-col :span="16">{{ log.content }}</el-col>
                 <el-col :span="1">
                     <el-tooltip effect="light"
                                 content="查看日志对应链路信息" placement="top"

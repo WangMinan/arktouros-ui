@@ -303,19 +303,22 @@
                 </el-col>
                 <el-col :span="16">
                     <div>
-                        <el-select v-model="traceId"
-                                   placeholder="请在左侧选择Endpoint后，选择TraceId"
-                                   style="width: 40%"
-                                   clearable
-                                   @change="getTopology"
-                        >
-                            <el-option
-                                v-for="item in traceIdList"
-                                :key="item"
-                                :label="item"
-                                :value="item"
-                            />
-                        </el-select>
+                        <div>Span调用图</div>
+                        <el-form-item label="TraceId">
+                            <el-select v-model="traceId"
+                                       placeholder="请在左侧选择Endpoint后，选择TraceId"
+                                       style="width: 40%"
+                                       clearable
+                                       @change="getTopology"
+                            >
+                                <el-option
+                                    v-for="item in traceIdList"
+                                    :key="item"
+                                    :label="item"
+                                    :value="item"
+                                />
+                            </el-select>
+                        </el-form-item>
                     </div>
                     <div id="trace-topology-div"></div>
                 </el-col>

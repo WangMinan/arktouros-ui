@@ -100,6 +100,11 @@
         if (startAndStopTime.value.length === 2) {
             tmpQueryDto.startTimeStamp = Date.parse(startAndStopTime.value[0])
             tmpQueryDto.endTimeStamp = Date.parse(startAndStopTime.value[1])
+        } else if (import.meta.env.VITE_NODE_ENV === 'production') {
+            ElMessage.warning("当前为正式环境, 时间范围置空时默认获取近半个小时内的日志")
+            const now = new Date()
+            tmpQueryDto.startTimestamp = now.getTime() - 30 * 60 * 1000
+            tmpQueryDto.endTimestamp = now.getTime()
         } else {
             tmpQueryDto.startTimeStamp = null
             tmpQueryDto.endTimeStamp = null
@@ -182,14 +187,25 @@
         let option = {
             backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
             title: {
-                text: metric.name,
+                // 将metric.name中的下换线替换成空格
+                text: metric.name.replace(/_/g, ' '),
                 textStyle: {
-                    fontWeight: 'normal',
-                    fontSize: 12
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    lineHeight: 16,
+                    // 自动换行 获取dom元素宽度
+                    width: document.getElementById('metric-graph-' + index)
+                        .offsetWidth - 20,
+                    overflow: 'break' // 设置自动换行
                 },
-                subtext: 'service: ' + metric.serviceName,
+                subtext: metric.metrics[0].description ? metric.metrics[0].description : '',
                 subtextStyle: {
-                    fontSize: 10
+                    fontSize: 10,
+                    lineHeight: 12,
+                    // 自动换行 获取dom元素宽度
+                    width: document.getElementById('metric-graph-' + index)
+                        .offsetWidth - 20,
+                    overflow: 'break' // 设置自动换行
                 }
             },
             tooltip: {
@@ -362,13 +378,7 @@
             <div class="graph-card"
                  v-for="(metricVo, index) in metricList"
                  :key="index">
-                <el-tooltip effect="light"
-                            v-if="metricVo.metrics[0]"
-                            :content="metricVo.metrics[0].description"
-                            placement="top"
-                            :enterable="false">
-                    <div class="graph-item" :id="'metric-graph-' + index"></div>
-                </el-tooltip>
+                <div class="graph-item" :id="'metric-graph-' + index"></div>
             </div>
         </div>
     </el-card>
