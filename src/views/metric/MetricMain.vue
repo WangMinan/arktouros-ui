@@ -5,6 +5,7 @@
     import { useStorage } from "@vueuse/core";
     import * as echarts from "echarts";
     import { ElMessage } from "element-plus";
+    import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
     
     const metricQueryDto = ref({
         serviceName: '',
@@ -115,6 +116,12 @@
         }
         if (data.result && data.result.length !== 0) {
             isMetricListEmpty.value = false
+            // data.result的时间戳转换成时间
+            data.result.forEach(item => {
+                item.metrics.forEach(metric => {
+                    metric.timestamp = timestampToJsTimeStr(metric.timestamp)
+                })
+            })
             metricList.value = data.result
             // 等待v-for渲染完成
             while (!document.getElementById(
@@ -224,7 +231,7 @@
             if (metric.metrics.length >= 2) {
                 option.xAxis = {
                     type: 'category',
-                    data: metric.metrics.map(item => timestampToTime(item.timestamp))
+                    data: metric.metrics.map(item => item.timestamp)
                 }
                 option.yAxis = {
                     type: 'value'
@@ -234,7 +241,6 @@
                     type: 'line'
                 }]
             } else {
-                console.log(metric.metrics[0].value)
                 // 富文本
                 option.series = [{
                     type: 'scatter',
@@ -292,31 +298,6 @@
         metricChart.setOption(option)
         metricCharts.push(metricChart)
     }
-    
-    const // 时间戳：1637244864707
-        /* 时间戳转换为时间 */
-        timestampToTime = (timestamp) => {
-            if (timestamp === '0') {
-                return 'unknown'
-            }
-            // 将timestamp调节到13位 多删少补
-            if (timestamp.length < 13) {
-                timestamp = timestamp + '000'
-            } else if (timestamp.length > 13) {
-                timestamp = timestamp.substring(0, 13)
-            }
-            
-            timestamp = Number(timestamp)
-            
-            let date = new Date(timestamp);
-            let Y = date.getFullYear() + '-';
-            let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-            let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
-            let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-            let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
-            let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-            return Y + M + D + h + m + s;
-        }
 </script>
 
 <template>

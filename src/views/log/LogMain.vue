@@ -4,6 +4,7 @@
     import { getLogList, getSeverityTextList } from "@/api/log/index.js";
     import { useRouter } from "vue-router";
     import { ElMessage } from "element-plus";
+    import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
     
     const router = useRouter()
     const total = ref(0)
@@ -89,31 +90,6 @@
         cb(results)
     }
     
-    const // 时间戳：1637244864707
-        /* 时间戳转换为时间 */
-        timestampToTime = (timestamp) => {
-            if (timestamp === '0') {
-                return 'unknown'
-            }
-            // 将timestamp调节到13位 多删少补
-            if (timestamp.length < 13) {
-                timestamp = timestamp + '000'
-            } else if (timestamp.length > 13) {
-                timestamp = timestamp.substring(0, 13)
-            }
-            
-            timestamp = Number(timestamp)
-            
-            let date = new Date(timestamp);
-            let Y = date.getFullYear() + '-';
-            let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-            let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
-            let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-            let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
-            let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-            return Y + M + D + h + m + s;
-        }
-    
     onMounted(async () => {
         await toggleLogList()
     })
@@ -126,7 +102,7 @@
         // 深拷贝
         const tmpLogCopy = JSON.parse(JSON.stringify(log))
         tmpLog.value = tmpLogCopy
-        tmpLog.value.timestamp = timestampToTime(tmpLogCopy.timestamp)
+        tmpLog.value.timestamp = timestampToJsTimeStr(tmpLogCopy.timestamp)
         tmpLog.value.error = tmpLogCopy.error ? '异常' : '正常'
         tmpLog.value.tags = tmpLogCopy.tags.map(tag => tag.key + ':' + tag.value).join('\t');
         dialogVisible.value = true
@@ -263,7 +239,7 @@
             <!-- 日志展示区 -->
             <el-row :gutter="5" v-for="log in logList" :key="log">
                 <el-col :span="2">{{ log.serviceName }}</el-col>
-                <el-col :span="3">{{ timestampToTime(log.timestamp) }}</el-col>
+                <el-col :span="3">{{ timestampToJsTimeStr(log.timestamp) }}</el-col>
                 <el-col :span="1">{{ log.severityText }}</el-col>
                 <el-col :span="16">{{ log.content }}</el-col>
                 <el-col :span="1">
