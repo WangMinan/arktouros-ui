@@ -103,24 +103,6 @@
                 <el-row :gutter="15">
                     <el-col :span="12">
                         <div style="display: flex; justify-content: center">
-                            <el-input
-                                class="auto-complete-input"
-                                v-model="baseQueryDto.query"
-                                clearable
-                                placeholder="服务名前缀搜索"
-                                style="width: 80%"
-                                @change="toggleServiceList"
-                            >
-                                <template #prepend>
-                                    <el-icon>
-                                        <Search/>
-                                    </el-icon>
-                                </template>
-                            </el-input>
-                        </div>
-                    </el-col>
-                    <el-col :span="12">
-                        <div style="display: flex; justify-content: center">
                             <el-autocomplete
                                 class="auto-complete-input"
                                 v-model="baseQueryDto.namespace"
@@ -136,6 +118,24 @@
                                     </el-icon>
                                 </template>
                             </el-autocomplete>
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div style="display: flex; justify-content: center">
+                            <el-input
+                                class="auto-complete-input"
+                                v-model="baseQueryDto.query"
+                                clearable
+                                placeholder="服务名前缀搜索"
+                                style="width: 80%"
+                                @change="toggleServiceList"
+                            >
+                                <template #prepend>
+                                    <el-icon>
+                                        <Search/>
+                                    </el-icon>
+                                </template>
+                            </el-input>
                         </div>
                     </el-col>
                 </el-row>
