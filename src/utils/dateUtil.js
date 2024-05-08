@@ -14,10 +14,8 @@ export const // 时间戳：1637244864707
         if (timestamp === '0') {
             return 'unknown'
         }
-        console.log(timestamp)
         // 历史遗留问题 将timestamp调节到13位 多删少补
         timestamp = formatToTargetLengthDigits(timestamp, 13)
-        console.log(timestamp)
 
         timestamp = Number(timestamp)
 

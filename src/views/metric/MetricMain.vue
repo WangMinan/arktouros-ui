@@ -80,16 +80,7 @@
         }
     }
     
-    const toggleMetrics = async () => {
-        if (metricCharts) {
-            // metricTopologyCharts.dispose(); //销毁
-            metricCharts.forEach(
-                chart => chart.dispose()
-            )
-        }
-        // 清空 metricList
-        metricList.value = []
-        isMetricListEmpty.value = true
+    function formTmpQueryDto() {
         // 数值预处理 深拷贝
         const tmpQueryDto = JSON.parse(JSON.stringify(metricQueryDto.value))
         if (tmpQueryDto.serviceName === 'null') {
@@ -110,6 +101,20 @@
             tmpQueryDto.startTimeStamp = null
             tmpQueryDto.endTimeStamp = null
         }
+        return tmpQueryDto;
+    }
+    
+    const toggleMetrics = async () => {
+        if (metricCharts) {
+            // metricTopologyCharts.dispose(); //销毁
+            metricCharts.forEach(
+                chart => chart.dispose()
+            )
+        }
+        // 清空 metricList
+        metricList.value = []
+        isMetricListEmpty.value = true
+        const tmpQueryDto = formTmpQueryDto();
         const data = await getMetricList(tmpQueryDto)
         if (data === null) {
             return
@@ -190,8 +195,9 @@
         });
     };
     
-    const drawMetric = (metric, index) => {
-        let option = {
+    
+    function getBasicOption(metric, index) {
+        return {
             backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
             title: {
                 // 将metric.name中的下换线替换成空格
@@ -225,7 +231,11 @@
                     color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
                 }
             }
-        }
+        };
+    }
+    
+    const drawMetric = (metric, index) => {
+        let option = getBasicOption(metric, index)
         if (metric.metricType === 'GAUGE' || metric.metricType === 'COUNTER') {
             // 分情况 如果metric.metrics只有一个数据则使用仪表盘 否则使用线形图
             if (metric.metrics.length >= 2) {

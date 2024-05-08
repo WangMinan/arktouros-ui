@@ -32,7 +32,6 @@
                 max-height: 6%;
             }
             .el-main{
-                // background-color: yellow;
                 width: 100%;
                 height: 100%;
             }
