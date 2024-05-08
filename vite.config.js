@@ -19,7 +19,7 @@ export default defineConfig({
         })
     ],
     server: {
-        port: 7070,
+        port: 47070,
         host: '0.0.0.0'
     },
     preview: {
