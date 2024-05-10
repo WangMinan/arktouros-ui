@@ -13,8 +13,8 @@
     
     const asideStore = useAsideStore()
     
-    const gotoGithub = () => {
-        window.open('https://github.com/wangminan/arktouros')
+    const gotoGithub = async () => {
+        await router.push('https://github.com/wangminan/arktouros')
     }
     
     // useToggle修改isDark状态
