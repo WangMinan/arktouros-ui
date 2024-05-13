@@ -13,7 +13,7 @@
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
     "echarts": "^5.5.0",
-    "element-plus": "^2.7.2",
+    "element-plus": "^2.7.3",
     "fake-progress": "^1.0.4",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
