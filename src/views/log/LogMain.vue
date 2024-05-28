@@ -29,9 +29,6 @@
         if (tmpLogQueryDto.serviceName === 'null') {
             tmpLogQueryDto.serviceName = ''
         }
-        if (tmpLogQueryDto.severityText === 'null') {
-            tmpLogQueryDto.severityText = ''
-        }
         // 文本时间转long型时间戳
         if (startAndStopTime.value.length === 2) {
             tmpLogQueryDto.startTimestamp = Date.parse(startAndStopTime.value[0])
@@ -104,7 +101,7 @@
         tmpLog.value = tmpLogCopy
         tmpLog.value.timestamp = timestampToJsTimeStr(tmpLogCopy.timestamp)
         tmpLog.value.error = tmpLogCopy.error ? '异常' : '正常'
-        tmpLog.value.tags = tmpLogCopy.tags.map(tag => tag.key + ':' + tag.value).join('\t');
+        tmpLog.value.tags = tmpLogCopy.tags.map(tag => tag.key + '->' + tag.value).join('\n');
         dialogVisible.value = true
     }
     
@@ -316,7 +313,7 @@
                 <el-input v-model="tmpLog.error"/>
             </el-form-item>
             <el-form-item label="Tags">
-                <el-input type="textarea" v-model="tmpLog.tags"/>
+                <el-input type="textarea" :rows="3" v-model="tmpLog.tags"/>
             </el-form-item>
         </el-form>
     </el-dialog>
