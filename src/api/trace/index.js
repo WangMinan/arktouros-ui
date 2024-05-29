@@ -24,11 +24,12 @@ export const getEndPointAndTraceIdListByServiceName = async (endpointsQueryDto) 
     return null
 }
 
-export const getSpanTopology = async (traceId) => {
+export const getSpanTopology = async (traceId, serviceName) => {
     try {
         const {data} = await axios.get('/trace/topology', {
             params: {
-                traceId: traceId
+                traceId: traceId,
+                serviceName: serviceName
             }
         })
         if (data.code !== null && data.code === 2000) {

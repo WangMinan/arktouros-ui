@@ -69,6 +69,9 @@
     // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
     const checkIsDark = useStorage('theme-appearance', 'auto')
     const drawServiceTopology = () => {
+        if (serviceTopologyChart) {
+            serviceTopologyChart.dispose(); //销毁
+        }
         let option = {
             backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
             title: {
@@ -103,6 +106,11 @@
                             position: "inside", // 标签位置:'top''left''right''bottom''inside''insideLeft''insideRight''insideTop''insideBottom''insideTopLeft''insideBottomLeft''insideTopRight''insideBottomRight'
                         }
                     },
+                    force: {
+                        repulsion: 200, // 节点之间的斥力因子。[ default: 50 ]
+                        edgeLength: 100, // 边的两个节点之间的距离。这个距离也会受 repulsion 影响。[ default: 30 ]
+                        layoutAnimation: true, // 在每次迭代结束后开始一次布局更新的动画。[ default: false ]
+                    },
                     animationEasingUpdate: "quinticInOut", // 数据更新动画的缓动效果。[ default: cubicOut ]    "quinticInOut"
                     animationDurationUpdate: 100, // 数据更新动画的时长。[ default: 300 ]
                 }
@@ -123,9 +131,6 @@
     
     // 使用自定义监听器来重新绘制图表
     watch(checkIsDark, () => {
-        if (serviceTopologyChart) {
-            serviceTopologyChart.dispose(); //销毁
-        }
         drawServiceTopology()
     })
 </script>

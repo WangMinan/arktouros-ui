@@ -168,7 +168,7 @@
             return
         }
         // 拿到traceId
-        const data = await getSpanTopology(traceId.value)
+        const data = await getSpanTopology(traceId.value, serviceName.value[1])
         if (data === null) {
             return
         }
@@ -181,13 +181,13 @@
     const checkIsDark = useStorage('theme-appearance', 'auto')
     // 使用自定义监听器来重新绘制图表
     watch(checkIsDark, () => {
-        if (spanTopologyChart) {
-            spanTopologyChart.dispose(); //销毁
-        }
         drawSpanTopology()
     })
     
     const drawSpanTopology = () => {
+        if (spanTopologyChart) {
+            spanTopologyChart.dispose(); //销毁
+        }
         let option = {
             backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
             tooltip: {

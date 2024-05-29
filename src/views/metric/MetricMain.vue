@@ -239,15 +239,49 @@
         if (metric.metricType === 'GAUGE' || metric.metricType === 'COUNTER') {
             // 分情况 如果metric.metrics只有一个数据则使用仪表盘 否则使用线形图
             if (metric.metrics.length >= 2) {
+                const tmpName = () => {
+                    let item = metric.metrics[0]
+                    if (Number(item.value) > 1000000000) {
+                        // 转换成xG的格式
+                        return 'G'
+                    } else if (Number(item.value) > 1000000) {
+                        // 转换成xM的格式
+                        return 'M'
+                    } else if (Number(item.value) > 1000) {
+                        // 转换成xK的格式
+                        return 'K'
+                    } else {
+                        return null
+                    }
+                };
                 option.xAxis = {
                     type: 'category',
                     data: metric.metrics.map(item => item.timestamp)
                 }
                 option.yAxis = {
-                    type: 'value'
+                    type: 'value',
+                    name: tmpName() == null ? null : 'Unit:' + tmpName(),
+                    nameLocation: 'start',
+                    nameGap: 20
                 }
                 option.series = [{
-                    data: metric.metrics.map(item => Number(item.value)),
+                    data: metric.metrics.map(item => {
+                        if (Number(item.value) > 1000000000) {
+                            // 转换成xG的格式
+                            return (Number(item.value) / 1000000000)
+                                .toFixed(2)
+                        } else if (Number(item.value) > 1000000) {
+                            // 转换成xM的格式
+                            return (Number(item.value) / 1000000)
+                                .toFixed(2)
+                        } else if (Number(item.value) > 1000) {
+                            // 转换成xK的格式
+                            return (Number(item.value) / 1000)
+                                .toFixed(2)
+                        } else {
+                            return item.value
+                        }
+                    }),
                     type: 'line'
                 }]
             } else {
@@ -283,11 +317,13 @@
             let buckets = []
             // 遍历buckets
             for (const key in metric.metrics[0].buckets) {
+                
                 buckets.push({
                     key: key,
                     value: metric.metrics[0].buckets[key]
                 })
             }
+            console.log(buckets)
             // 按照key的数值大小对buckets进行排序
             buckets.sort((a, b) => a.key - b.key)
             option.xAxis = {
@@ -387,7 +423,6 @@
             .graph-card {
                 height: 240px;
                 border: 1px solid var(--el-menu-border-color);
-                
                 .graph-item {
                     width: 100%;
                     height: 100%;
