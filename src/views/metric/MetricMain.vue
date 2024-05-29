@@ -234,33 +234,35 @@
         };
     }
     
+    const getAxisTagName = (item) => {
+        if (Number(item.value) > 1000000000) {
+            // 转换成xG的格式
+            return 'G'
+        } else if (Number(item.value) > 1000000) {
+            // 转换成xM的格式
+            return 'M'
+        } else if (Number(item.value) > 1000) {
+            // 转换成xK的格式
+            return 'K'
+        } else {
+            return null
+        }
+    };
+    
     const drawMetric = (metric, index) => {
         let option = getBasicOption(metric, index)
         if (metric.metricType === 'GAUGE' || metric.metricType === 'COUNTER') {
             // 分情况 如果metric.metrics只有一个数据则使用仪表盘 否则使用线形图
             if (metric.metrics.length >= 2) {
-                const tmpName = () => {
-                    let item = metric.metrics[0]
-                    if (Number(item.value) > 1000000000) {
-                        // 转换成xG的格式
-                        return 'G'
-                    } else if (Number(item.value) > 1000000) {
-                        // 转换成xM的格式
-                        return 'M'
-                    } else if (Number(item.value) > 1000) {
-                        // 转换成xK的格式
-                        return 'K'
-                    } else {
-                        return null
-                    }
-                };
                 option.xAxis = {
                     type: 'category',
                     data: metric.metrics.map(item => item.timestamp)
                 }
                 option.yAxis = {
                     type: 'value',
-                    name: tmpName() == null ? null : 'Unit:' + tmpName(),
+                    name: getAxisTagName(metric.metrics[metric.metrics.length - 1]
+                        .value) === null ?
+                        null : 'Unit:' + getAxisTagName(metric.metrics[0].value),
                     nameLocation: 'start',
                     nameGap: 20
                 }
@@ -331,10 +333,28 @@
                 data: buckets.map(item => item.key)
             }
             option.yAxis = {
-                type: 'value'
+                type: 'value',
+                name: getAxisTagName(buckets[buckets.length - 1].value) === null ?
+                    null : 'Unit:' + getAxisTagName(buckets[buckets.length - 1].value),
             }
             option.series = [{
-                data: buckets.map(item => Number(item.value)),
+                data: buckets.map(item => {
+                    if (Number(item.value) > 1000000000) {
+                        // 转换成xG的格式
+                        return (Number(item.value) / 1000000000)
+                            .toFixed(2)
+                    } else if (Number(item.value) > 1000000) {
+                        // 转换成xM的格式
+                        return (Number(item.value) / 1000000)
+                            .toFixed(2)
+                    } else if (Number(item.value) > 1000) {
+                        // 转换成xK的格式
+                        return (Number(item.value) / 1000)
+                            .toFixed(2)
+                    } else {
+                        return item.value
+                    }
+                }),
                 type: 'bar'
             }]
         }
