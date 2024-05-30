@@ -325,7 +325,6 @@
                     value: metric.metrics[0].buckets[key]
                 })
             }
-            console.log(buckets)
             // 按照key的数值大小对buckets进行排序
             buckets.sort((a, b) => a.key - b.key)
             option.xAxis = {

@@ -233,12 +233,15 @@
                 </el-form>
             </div>
             <el-divider/>
-            <!-- 日志展示区 -->
-            <el-row :gutter="5" v-for="log in logList" :key="log">
-                <el-col :span="2">{{ log.serviceName }}</el-col>
+            <!-- 日志展示区 超长自动换行-->
+            <el-row :gutter="5"
+                    v-for="log in logList"
+                    :key="log"
+                    style="word-break:break-all;">
+                <el-col :span="4">{{ log.serviceName }}</el-col>
                 <el-col :span="3">{{ timestampToJsTimeStr(log.timestamp) }}</el-col>
-                <el-col :span="1">{{ log.severityText }}</el-col>
-                <el-col :span="16">{{ log.content }}</el-col>
+                <el-col :span="2">{{ log.severityText }}</el-col>
+                <el-col :span="12">{{ log.content }}</el-col>
                 <el-col :span="1">
                     <el-tooltip effect="light"
                                 content="查看日志对应链路信息" placement="top"
