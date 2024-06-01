@@ -94,6 +94,7 @@
             series: [
                 {
                     type: 'graph',
+                    edgeSymbol: ['none', 'arrow'],
                     focusNodeAdjacency: true,   // 是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。[ default: false ]
                     roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
                     layout: 'force', // 力引导布局 否则要手动指定xy坐标

@@ -235,13 +235,13 @@
     }
     
     const getAxisTagName = (item) => {
-        if (Number(item.value) > 1000000000) {
+        if (Number(item) > 1000000000) {
             // 转换成xG的格式
             return 'G'
-        } else if (Number(item.value) > 1000000) {
+        } else if (Number(item) > 1000000) {
             // 转换成xM的格式
             return 'M'
-        } else if (Number(item.value) > 1000) {
+        } else if (Number(item) > 1000) {
             // 转换成xK的格式
             return 'K'
         } else {
@@ -319,7 +319,6 @@
             let buckets = []
             // 遍历buckets
             for (const key in metric.metrics[0].buckets) {
-                
                 buckets.push({
                     key: key,
                     value: metric.metrics[0].buckets[key]
