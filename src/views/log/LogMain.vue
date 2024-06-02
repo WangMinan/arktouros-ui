@@ -26,9 +26,6 @@
     const toggleLogList = async () => {
         // 深拷贝
         const tmpLogQueryDto = JSON.parse(JSON.stringify(logQueryDto.value))
-        if (tmpLogQueryDto.serviceName === 'null') {
-            tmpLogQueryDto.serviceName = ''
-        }
         // 文本时间转long型时间戳
         if (startAndStopTime.value.length === 2) {
             tmpLogQueryDto.startTimestamp = Date.parse(startAndStopTime.value[0])
@@ -165,6 +162,11 @@
     const setServiceName = () => {
         if (serviceName.value) {
             logQueryDto.value.serviceName = serviceName.value[1]
+            if (logQueryDto.value.serviceName === '' || logQueryDto.value.serviceName == null) {
+                logQueryDto.value.serviceName = 'null'
+            }
+        } else {
+            logQueryDto.value.serviceName = null
         }
     }
 </script>
@@ -185,7 +187,7 @@
         <el-card class="log-card">
             <!-- 搜索区 -->
             <div class="search-area">
-                <el-form :inline="true" :model="logQueryDto" class="demo-form-inline">
+                <el-form :inline="true" :model="logQueryDto">
                     <el-form-item label="服务名称">
                         <el-cascader
                             placeholder="请选择命名空间→服务名称"
