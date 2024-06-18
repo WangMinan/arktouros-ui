@@ -93,10 +93,11 @@
             tmpQueryDto.startTimeStamp = Date.parse(startAndStopTime.value[0])
             tmpQueryDto.endTimeStamp = Date.parse(startAndStopTime.value[1])
         } else if (import.meta.env.VITE_NODE_ENV === 'production') {
-            ElMessage.warning("当前为正式环境, 时间范围置空时默认获取近半个小时内的日志")
+            ElMessage.warning("当前为正式环境, 时间范围置空时默认获取近半个小时内的数值")
             const now = new Date()
-            tmpQueryDto.startTimestamp = now.getTime() - 30 * 60 * 1000
-            tmpQueryDto.endTimestamp = now.getTime()
+            tmpQueryDto.startTimeStamp = now.getTime() - 30 * 60 * 1000
+            tmpQueryDto.endTimeStamp = now.getTime()
+            console.log(tmpQueryDto)
         } else {
             tmpQueryDto.startTimeStamp = null
             tmpQueryDto.endTimeStamp = null
