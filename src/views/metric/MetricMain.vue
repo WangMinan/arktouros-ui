@@ -4,7 +4,7 @@
     import { getMetricList } from "@/api/metric/index.js";
     import { useStorage } from "@vueuse/core";
     import * as echarts from "echarts";
-    import { ElMessage } from "element-plus";
+    import { ElLoading, ElMessage } from "element-plus";
     import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
     
     const metricQueryDto = ref({
@@ -116,33 +116,43 @@
         metricList.value = []
         isMetricListEmpty.value = true
         const tmpQueryDto = formTmpQueryDto();
-        const data = await getMetricList(tmpQueryDto)
-        if (data === null) {
-            return
-        }
-        if (data.result && data.result.length !== 0) {
-            isMetricListEmpty.value = false
-            // data.result的时间戳转换成时间
-            data.result.forEach(item => {
-                item.metrics.forEach(metric => {
-                    metric.timestamp = timestampToJsTimeStr(metric.timestamp)
-                })
+        let loading;
+        try {
+            loading = ElLoading.service({
+                lock: true,
+                text: '正在获取数据',
+                background: 'rgba(0, 0, 0, 0.7)',
             })
-            metricList.value = data.result
-            // 等待v-for渲染完成
-            while (!document.getElementById(
-                'metric-graph-' + (metricList.value.length - 1))) {
-                await new Promise(resolve => setTimeout(resolve, 100))
+            const data = await getMetricList(tmpQueryDto)
+            if (data === null) {
+                return
             }
-            for (let i = 0; i < metricList.value.length; i++) {
-                try {
-                    drawMetric(metricList.value[i], i)
-                } catch (e) {
-                    ElMessage.error(e)
+            if (data.result && data.result.length !== 0) {
+                isMetricListEmpty.value = false
+                // data.result的时间戳转换成时间
+                data.result.forEach(item => {
+                    item.metrics.forEach(metric => {
+                        metric.timestamp = timestampToJsTimeStr(metric.timestamp)
+                    })
+                })
+                metricList.value = data.result
+                // 等待v-for渲染完成
+                while (!document.getElementById(
+                    'metric-graph-' + (metricList.value.length - 1))) {
+                    await new Promise(resolve => setTimeout(resolve, 100))
                 }
+                for (let i = 0; i < metricList.value.length; i++) {
+                    try {
+                        drawMetric(metricList.value[i], i)
+                    } catch (e) {
+                        ElMessage.error(e)
+                    }
+                }
+            } else {
+                isMetricListEmpty.value = true
             }
-        } else {
-            isMetricListEmpty.value = true
+        } finally {
+            loading.close()
         }
     }
     
@@ -442,6 +452,7 @@
             .graph-card {
                 height: 240px;
                 border: 1px solid var(--el-menu-border-color);
+                
                 .graph-item {
                     width: 100%;
                     height: 100%;
