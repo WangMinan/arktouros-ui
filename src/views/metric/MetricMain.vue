@@ -97,7 +97,6 @@
             const now = new Date()
             tmpQueryDto.startTimeStamp = now.getTime() - 30 * 60 * 1000
             tmpQueryDto.endTimeStamp = now.getTime()
-            console.log(tmpQueryDto)
         } else {
             tmpQueryDto.startTimeStamp = null
             tmpQueryDto.endTimeStamp = null
