@@ -119,7 +119,7 @@
         try {
             loading = ElLoading.service({
                 lock: true,
-                text: '正在获取数据',
+                text: '正在搜索，数据量较大，请耐心等待',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
             const data = await getMetricList(tmpQueryDto)
