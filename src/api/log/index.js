@@ -3,7 +3,7 @@ import { ElMessage } from "element-plus";
 
 export const getSeverityTextList = async (query) => {
     try {
-        const {data} = await axios.get('/log/level', {
+        const {data} = await axios.get('/log/levels', {
             params: {
                 query: query
             }
@@ -24,7 +24,7 @@ export const getSeverityTextList = async (query) => {
 
 export const getLogList = async (logQueryDto) => {
     try {
-        const {data} = await axios.get('/log', {
+        const {data} = await axios.get('/logs', {
             params: {
                 pageNum: logQueryDto.pageNum,
                 pageSize: logQueryDto.pageSize,

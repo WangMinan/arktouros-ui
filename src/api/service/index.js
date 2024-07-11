@@ -3,7 +3,7 @@ import { ElMessage } from "element-plus";
 
 export const getNamespaceList = async (query) => {
     try {
-        const {data} = await axios.get('/service/namespace', {
+        const {data} = await axios.get('/service/namespaces', {
             params: {
                 query: query
             }
@@ -24,7 +24,7 @@ export const getNamespaceList = async (query) => {
 
 export const getServiceList = async (baseQueryDto) => {
     try {
-        const {data} = await axios.get('/service', {
+        const {data} = await axios.get('/services', {
             params: {
                 query: baseQueryDto.query,
                 namespace: baseQueryDto.namespace,

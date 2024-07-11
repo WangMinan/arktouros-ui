@@ -3,7 +3,7 @@ import { ElMessage } from "element-plus";
 
 export const getMetricList = async (metricQueryDto) => {
     try {
-        const {data} = await axios.get('/metric', {
+        const {data} = await axios.get('/metrics', {
             params: {
                 serviceName: metricQueryDto.serviceName,
                 metricNameLimit: metricQueryDto.metricNameLimit,
