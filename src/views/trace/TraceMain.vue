@@ -188,7 +188,6 @@
         if (spanTopologyChart) {
             spanTopologyChart.dispose(); //销毁
         }
-        console.log(topology.value)
         let option = {
             title: {
                 subtext: '绿色为正常节点，红色为异常节点',
