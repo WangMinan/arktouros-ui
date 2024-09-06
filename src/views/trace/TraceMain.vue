@@ -85,7 +85,7 @@
             }
             traceId.value = router.currentRoute.value.query.traceId
         }
-        if(router.currentRoute.value.query.serviceName && router.currentRoute.value.query.traceId) {
+        if (router.currentRoute.value.query.serviceName && router.currentRoute.value.query.traceId) {
             drawSpanTopology()
         }
         window.addEventListener('resize', handleResize);
@@ -188,7 +188,12 @@
         if (spanTopologyChart) {
             spanTopologyChart.dispose(); //销毁
         }
+        console.log(topology.value)
         let option = {
+            title: {
+                subtext: '绿色为正常节点，红色为异常节点',
+                align: 'right'
+            },
             backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
             tooltip: {
                 trigger: 'item',
@@ -207,18 +212,11 @@
                     animationDuration: 550,
                     animationDurationUpdate: 750,
                     label: {
-                        position: 'left',
+                        position: 'right',
                         verticalAlign: 'middle',
-                        align: 'right',
                         fontSize: 9
                     },
-                    leaves: {
-                        label: {
-                            position: 'right',
-                            verticalAlign: 'middle',
-                            align: 'left'
-                        }
-                    },
+                    initialTreeDepth: -1,
                     data: [topology.value]
                 }
             ]
@@ -366,7 +364,7 @@
             
             #trace-topology-div {
                 margin-top: 2%;
-                width: 100%;
+                width: 98%;
                 height: 400px;
             }
         }
