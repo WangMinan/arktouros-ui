@@ -32,7 +32,7 @@
                 return {
                     draggable: true,
                     name: item.nodeObject.name,
-                    category: item.nodeObject.nodeName,
+                    category: item.nodeObject.status ? 0 : 1,
                     symbolSize: [50, 50] // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
                 }
             }
@@ -77,6 +77,8 @@
             title: {
                 text: "服务关系图", // 标题文本
             },
+            legend: {}, // 图例
+            color: ["#6EF780", "#FF2700"],
             tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove',
@@ -114,6 +116,14 @@
                     },
                     animationEasingUpdate: "quinticInOut", // 数据更新动画的缓动效果。[ default: cubicOut ]    "quinticInOut"
                     animationDurationUpdate: 100, // 数据更新动画的时长。[ default: 300 ]
+                    categories: [
+                        {
+                            name: '服务在线',
+                        },
+                        {
+                            name: '服务离线或状态未知'
+                        }
+                    ]
                 }
             ]
         }
