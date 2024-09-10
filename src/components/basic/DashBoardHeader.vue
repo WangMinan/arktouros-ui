@@ -13,10 +13,6 @@
     
     const asideStore = useAsideStore()
     
-    const gotoGithub = async () => {
-        await router.push('https://github.com/wangminan/arktouros')
-    }
-    
     // useToggle修改isDark状态
     const toggleDark = useToggle(isDark)
     // 点击toggleTheme
@@ -87,26 +83,32 @@
                 </div>
                 
                 <div>
-                    <el-button
-                        icon="HomeFilled"
-                        circle
-                        @click="router.push('/main'); asideStore.resetActive();"
-                    ></el-button>
+                    <el-tooltip content="返回首页" placement="bottom">
+                        <el-button
+                            icon="HomeFilled"
+                            circle
+                            @click="router.push('/main'); asideStore.resetActive();"
+                        ></el-button>
+                    </el-tooltip>
                 </div>
                 
                 <div>
-                    <el-button icon="Refresh"
-                               circle
-                               @click="router.go(0)"
-                    />
+                    <el-tooltip content="查看数字大屏" placement="bottom">
+                        <el-button
+                            icon="Histogram"
+                            circle
+                            @click="router.push('/screen'); asideStore.resetActive();"
+                        ></el-button>
+                    </el-tooltip>
                 </div>
                 
-                <div class="githubBtn">
-                    <el-button circle @click="gotoGithub">
-                        <img class="githubIcon" src="@/assets/images/github.svg"
-                             alt="github"
+                <div>
+                    <el-tooltip content="刷新" placement="bottom">
+                        <el-button icon="Refresh"
+                                   circle
+                                   @click="router.go(0)"
                         />
-                    </el-button>
+                    </el-tooltip>
                 </div>
             </el-space>
         </div>
@@ -121,12 +123,15 @@
         align-items: center;
         justify-content: flex-end;
         background-color: #e9e9eb;
+        
         .l-content {
             margin-left: 1%;
         }
+        
         .flex-grow {
             flex-grow: 1;
         }
+        
         .r-content {
             display: flex; /* 添加这个属性 */
             align-items: center; /* 确保这个属性在这里 */
@@ -134,6 +139,7 @@
             
             .el-space {
                 margin-right: 1rem;
+                
                 .el-button {
                     .githubIcon {
                         width: 1rem;

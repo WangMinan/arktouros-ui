@@ -7,6 +7,14 @@ const routes = [
         redirect: '/main'
     },
     {
+        path: '/screen',
+        name: 'dataScreen',
+        meta: {
+            title: 'Arktouros-DataScreen'
+        },
+        component: () => import("@/views/DataScreen.vue")
+    },
+    {
         path: '/main',
         name: 'main',
         meta: {
@@ -21,7 +29,7 @@ const routes = [
                 meta: {
                     title: 'Arktouros|Default'
                 },
-                component: () => import("@/views/default/DefaultMain.vue")
+                component: () => import("@/views/default/DashBoardMain.vue")
             },
             {
                 path: 'service',

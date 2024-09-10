@@ -24,14 +24,17 @@
     .dashBoardContainer {
         width: 100%;
         height: 100%;
-        .el-container{
+        
+        .el-container {
             height: 100%;
             width: 100%;
-            .el-header{
+            
+            .el-header {
                 padding: 0;
                 max-height: 6%;
             }
-            .el-main{
+            
+            .el-main {
                 width: 100%;
                 height: 100%;
             }
