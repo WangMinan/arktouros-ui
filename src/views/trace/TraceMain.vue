@@ -5,6 +5,7 @@
     import { useStorage } from "@vueuse/core";
     import * as echarts from "echarts";
     import { useRouter } from "vue-router";
+    import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
     
     
     const serviceName = ref()
@@ -184,13 +185,39 @@
         drawSpanTopology()
     })
     
+    function formatSpan(span) {
+        // ERROR_SPAN_END_TIME = -1
+        const status = span.endTime === -1 ? '异常或离线' : '正常'
+        const startTime = timestampToJsTimeStr(span.startTime)
+        const endTime = span.endTime === -1 ? '该Span异常' : timestampToJsTimeStr(span.endTime)
+        const localIp = span.localEndPoint.ip === '' ? 'null' : span.localEndPoint.ip
+        const remoteIp = span.remoteEndPoint.ip === '' ? 'null' : span.remoteEndPoint.ip
+        return `<div>
+                    <div>
+                        <b>当前Span详细情况</b>
+                    </div>
+                    <ul>
+                        <li>id: ${span.id}</li>
+                        <li>名称: ${span.name}</li>
+                        <li>开始时间: ${startTime}</li>
+                        <li>结束时间: ${endTime}</li>
+                        <li>span状态: ${status}</li>
+                        <li>父节点SpanId: ${span.parentSpanId}</li>
+                        <li>所属endPoint: ${span.localEndPoint.serviceName}</li>
+                        <li>所属endPoint ip与端口: ${localIp}:${span.localEndPoint.port}</li>
+                        <li>远程endPoint: ${span.remoteEndPoint.serviceName}</li>
+                        <li>远程endPoint ip与端口: ${remoteIp}:${span.remoteEndPoint.port}</li>
+                    </ul>
+                </div>`;
+    }
+    
     const drawSpanTopology = () => {
         if (spanTopologyChart) {
             spanTopologyChart.dispose(); //销毁
         }
         let option = {
             title: {
-                subtext: '绿色为正常节点，红色为异常节点',
+                subtext: '绿色为正常Span节点，红色为异常Span节点',
                 align: 'right'
             },
             backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
@@ -200,6 +227,11 @@
                 backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
                 textStyle: {
                     color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
+                },
+                // 自定义提示框内容的回调函数 params参数实际存储的就是SpanTreeNodeVo对象
+                formatter: function (params) {
+                    // 通过修改SpanTreeNodeVo，我们把Span对象也放到params中
+                    return formatSpan(params.data.span);
                 }
             },
             series: [
