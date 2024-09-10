@@ -92,8 +92,9 @@
                     </el-tooltip>
                 </div>
                 <div>
-                    <el-tooltip content="查看数字大屏" placement="bottom">
+                    <el-tooltip content="查看数字大屏-未开发" placement="bottom">
                         <el-button
+                            :disabled="true"
                             icon="Histogram"
                             circle
                             @click="router.push('/screen'); asideStore.resetActive();"
