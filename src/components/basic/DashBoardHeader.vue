@@ -91,7 +91,6 @@
                         ></el-button>
                     </el-tooltip>
                 </div>
-                
                 <div>
                     <el-tooltip content="查看数字大屏" placement="bottom">
                         <el-button
@@ -101,7 +100,6 @@
                         ></el-button>
                     </el-tooltip>
                 </div>
-                
                 <div>
                     <el-tooltip content="刷新" placement="bottom">
                         <el-button icon="Refresh"
@@ -136,16 +134,8 @@
             display: flex; /* 添加这个属性 */
             align-items: center; /* 确保这个属性在这里 */
             text-align: center;
-            
             .el-space {
                 margin-right: 1rem;
-                
-                .el-button {
-                    .githubIcon {
-                        width: 1rem;
-                        height: 1rem;
-                    }
-                }
             }
         }
     }
