@@ -2,6 +2,7 @@
     import { useDark, useToggle } from '@vueuse/core'
     import { useRouter } from "vue-router";
     import { useAsideStore } from "@/store/aside/index.js";
+    import { computed } from "vue";
     
     const router = useRouter()
     
@@ -63,6 +64,8 @@
             )
         })
     }
+    
+    const disableDataScreen = computed(() => import.meta.env.VITE_NODE_ENV === 'production')
 </script>
 
 <template>
@@ -92,9 +95,9 @@
                     </el-tooltip>
                 </div>
                 <div>
-                    <el-tooltip content="查看数字大屏-未开发" placement="bottom">
+                    <el-tooltip :content="'查看数字大屏' + (disableDataScreen ? ' - 未启用' : '')" placement="bottom">
                         <el-button
-                            :disabled="true"
+                            :disabled="disableDataScreen"
                             icon="Histogram"
                             circle
                             @click="router.push('/screen'); asideStore.resetActive();"

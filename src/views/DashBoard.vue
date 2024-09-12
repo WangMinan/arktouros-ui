@@ -1,5 +1,4 @@
 <script setup>
-    
     import DashBoardAside from "@/components/basic/DashBoardAside.vue";
     import DashBoardHeader from "@/components/basic/DashBoardHeader.vue";
 </script>
