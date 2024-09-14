@@ -22,7 +22,11 @@
                     draggable: true,
                     name: item.nodeObject.name,
                     category: item.nodeObject.status ? 0 : 1,
-                    symbolSize: [50, 50] // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
+                    symbolSize: [50, 50], // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
+                    item: item, // 传递给toolTip的附加信息
+                    itemStyle: {
+                        color: item.nodeObject.status ? "#6EF780": "#FF2700",
+                    }
                 }
             }
             return null
@@ -57,23 +61,47 @@
     let serviceTopologyChart
     // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
     const checkIsDark = useStorage('theme-appearance', 'auto')
+    
+    function formatService(service) {
+        const status = service.status ? '正常' : '异常或离线'
+        const tagsStr = service.tags.length === 0 ? '[]' : service.tags.toString()
+        return `<div>
+                    <div>
+                        <b>当前Service详细情况</b>
+                    </div>
+                    <ul>
+                        <li>id: ${service.id}</li>
+                        <li>名称: ${service.name}</li>
+                        <li>命名空间: ${service.namespace}</li>
+                        <li>延迟: ${service.latency} ms</li>
+                        <li>状态: ${status}</li>
+                        <li>标签: ${tagsStr}</li>
+                    </ul>
+                </div>`;
+    }
+    
     const drawServiceTopology = () => {
         if (serviceTopologyChart) {
             serviceTopologyChart.dispose(); //销毁
         }
         let option = {
-            backgroundColor: checkIsDark.value ==='dark' ? '#212224':'#fff',
+            backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
             title: {
                 text: "服务关系图", // 标题文本
             },
-            legend: {}, // 图例
-            color: ["#6EF780", "#FF2700"],
+            legend: {
+            
+            }, // 图例
             tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove',
                 backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
                 textStyle: {
                     color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
+                },
+                formatter: function (params) {
+                    // 通过修改SpanTreeNodeVo，我们把Span对象也放到params中
+                    return formatService(params.data.item.nodeObject);
                 }
             },
             label: {                // 关系对象上的标签
@@ -108,9 +136,15 @@
                     categories: [
                         {
                             name: '服务在线',
+                            itemStyle: {
+                                color: "#6EF780"
+                            }
                         },
                         {
-                            name: '服务离线或状态未知'
+                            name: '服务离线或状态未知',
+                            itemStyle: {
+                                color: "#FF2700"
+                            }
                         }
                     ]
                 }
@@ -155,6 +189,7 @@
             display: flex;
             justify-content: center;
             width: 90%;
+            
             #service-topology-dom {
                 width: 800px;
                 height: 500px;

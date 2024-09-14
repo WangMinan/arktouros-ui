@@ -58,6 +58,7 @@
             resolve(nodes)
         }
     })
+    
     const endpointsQueryDto = reactive({
         serviceName: '',
         pageNum: 1,
