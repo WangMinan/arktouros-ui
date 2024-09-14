@@ -187,10 +187,9 @@
     })
     
     function formatSpan(span) {
-        // ERROR_SPAN_END_TIME = -1
-        const status = span.endTime === -1 ? '异常或离线' : '正常'
+        const status = span.endTime === '-1' ? '异常或离线' : '正常'
         const startTime = timestampToJsTimeStr(span.startTime)
-        const endTime = span.endTime === -1 ? '该Span异常' : timestampToJsTimeStr(span.endTime)
+        const endTime = span.endTime === '-1' ? '该Span异常' : timestampToJsTimeStr(span.endTime)
         const localIp = span.localEndPoint.ip === '' ? 'null' : span.localEndPoint.ip
         const remoteIp = span.remoteEndPoint.ip === '' ? 'null' : span.remoteEndPoint.ip
         return `<div>
