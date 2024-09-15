@@ -64,7 +64,9 @@
     
     function formatService(service) {
         const status = service.status ? '正常' : '异常或离线'
-        const tagsStr = service.tags.length === 0 ? '[]' : service.tags.toString()
+        const tagsStr = service.tags.length === 0 ? '[]' : JSON.stringify(service.tags)
+        
+        console.log(service.tags)
         return `<div>
                     <div>
                         <b>当前Service详细情况</b>
