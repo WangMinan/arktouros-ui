@@ -75,6 +75,7 @@
     };
     
     onMounted(async () => {
+        console.log(router.currentRoute.value)
         if (router.currentRoute.value.query.serviceName) {
             endpointsQueryDto.serviceName = router.currentRoute.value.query.serviceName
             serviceName.value = router.currentRoute.value.query.serviceName
@@ -115,7 +116,8 @@
         // 拿到叶子结点元素
         endpointsQueryDto.serviceName = serviceName.value[1]
         const data = await getEndPointAndTraceIdListByServiceName(endpointsQueryDto)
-        if (data === null) {
+        console.log(data)
+        if (data === null || data.result.length === 0) {
             return
         }
         total.value = data.result.length

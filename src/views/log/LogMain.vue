@@ -5,6 +5,11 @@
     import { useRouter } from "vue-router";
     import { ElMessage } from "element-plus";
     import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
+    import { useAsideStore } from "@/store/aside/index.js";
+    import { storeToRefs } from "pinia";
+    
+    const asideStore = useAsideStore()
+    const {currentAside} = storeToRefs(asideStore)
     
     const router = useRouter()
     const total = ref(0)
@@ -107,6 +112,9 @@
             ElMessage.warning("该日志未上报链路信息")
             return
         }
+        asideStore.$patch((state) => {
+            state.currentAside.active = '/main/trace'
+        })
         await router.push(`/main/trace?serviceName=${log.serviceName}&traceId=${log.traceId}`)
     }
     
