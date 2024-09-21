@@ -48,12 +48,12 @@
         }
         total.value = parseInt(data.result.total)
         const tmpList = data.result.data
-        // tmpList中每个对象的status属性 如果是true 改为在线 如果为false 改为离线或未知
+        // tmpList中每个对象的status属性 如果是true 改为在线 如果为false 改为异常或离线
         tmpList.forEach(item => {
             if (item.status === true) {
                 item.status = '在线'
             } else {
-                item.status = '离线或未知'
+                item.status = '异常或离线'
             }
             if (!item.name) {
                 item.name = 'null'
