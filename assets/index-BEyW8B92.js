@@ -1,1 +1,0 @@
-import{d as s}from"./pinia-BDCl_YBC.js";import{r}from"./@vue-CUOd3UHG.js";const t=s("aside",()=>{const e=r({active:"",isCollapse:!1});return{currentAside:e,resetActive:()=>{e.value.active=""}}},{persist:{storage:sessionStorage,paths:["currentAside"],key:"currentAside"}});export{t as u};
