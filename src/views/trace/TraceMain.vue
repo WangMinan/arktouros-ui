@@ -75,10 +75,12 @@
     };
     
     onMounted(async () => {
-        console.log(router.currentRoute.value)
+        window.addEventListener('resize', handleResize);
+        resizeObserver = new ResizeObserver(() => handleResize);
+        resizeObserver.observe(document.getElementById('trace-topology-div'));
         if (router.currentRoute.value.query.serviceName) {
             endpointsQueryDto.serviceName = router.currentRoute.value.query.serviceName
-            serviceName.value = router.currentRoute.value.query.serviceName
+            serviceName.value = ['default', router.currentRoute.value.query.serviceName]
             await getEndPointAndTraceIdList()
         }
         if (router.currentRoute.value.query.traceId) {
@@ -89,11 +91,8 @@
             traceId.value = router.currentRoute.value.query.traceId
         }
         if (router.currentRoute.value.query.serviceName && router.currentRoute.value.query.traceId) {
-            drawSpanTopology()
+            await getTopology()
         }
-        window.addEventListener('resize', handleResize);
-        resizeObserver = new ResizeObserver(() => handleResize);
-        resizeObserver.observe(document.getElementById('trace-topology-div'));
     })
     
     onBeforeUnmount(() => {
@@ -116,7 +115,6 @@
         // 拿到叶子结点元素
         endpointsQueryDto.serviceName = serviceName.value[1]
         const data = await getEndPointAndTraceIdListByServiceName(endpointsQueryDto)
-        console.log(data)
         if (data === null || data.result.length === 0) {
             return
         }

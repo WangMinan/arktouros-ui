@@ -6,10 +6,8 @@
     import { ElMessage } from "element-plus";
     import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
     import { useAsideStore } from "@/store/aside/index.js";
-    import { storeToRefs } from "pinia";
     
     const asideStore = useAsideStore()
-    const {currentAside} = storeToRefs(asideStore)
     
     const router = useRouter()
     const total = ref(0)
