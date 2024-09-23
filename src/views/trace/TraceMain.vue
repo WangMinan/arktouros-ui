@@ -165,12 +165,14 @@
         children: []
     })
     
+    const innerService = ref(true)
+    
     const getTopology = async () => {
         if (traceId.value === '' || traceId.value === undefined) {
             return
         }
         // 拿到traceId
-        const data = await getSpanTopology(traceId.value, serviceName.value[1])
+        const data = await getSpanTopology(traceId.value, serviceName.value[1], innerService.value)
         if (data === null) {
             return
         }
@@ -199,6 +201,7 @@
                     <ul>
                         <li>id: ${span.id}</li>
                         <li>名称: ${span.name}</li>
+                        <li>所属服务: ${span.serviceName}</li>
                         <li>开始时间: ${startTime}</li>
                         <li>结束时间: ${endTime}</li>
                         <li>span状态: ${status}</li>
@@ -333,21 +336,36 @@
                 <el-col :span="16">
                     <div>
                         <div>Span调用图</div>
-                        <el-form-item label="TraceId">
-                            <el-select v-model="traceId"
-                                       placeholder="请在左侧选择Endpoint后，选择TraceId"
-                                       style="width: 40%"
-                                       clearable
-                                       @change="getTopology"
-                            >
-                                <el-option
-                                    v-for="item in traceIdList"
-                                    :key="item"
-                                    :label="item"
-                                    :value="item"
-                                />
-                            </el-select>
-                        </el-form-item>
+                        <el-row :gutter="15">
+                            <el-col :span="12">
+                                <el-form-item label="TraceId">
+                                    <el-select v-model="traceId"
+                                               placeholder="请在左侧选择Endpoint后，选择TraceId"
+                                               style="width: 90%"
+                                               clearable
+                                               @change="getTopology"
+                                    >
+                                        <el-option
+                                            v-for="item in traceIdList"
+                                            :key="item"
+                                            :label="item"
+                                            :value="item"
+                                        />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item>
+                                    <el-switch
+                                        active-text="仅查看属于当前service的span"
+                                        inactive-text="查看当前trace下的所有span"
+                                        v-model="innerService"
+                                        size="small"
+                                        @change="getTopology"
+                                    />
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </div>
                     <div id="trace-topology-div"></div>
                 </el-col>
