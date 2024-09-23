@@ -2,10 +2,11 @@ import axios from 'axios'
 import { start, stop } from '@/utils/nprogress.js'
 import router from '@/router/index.js'
 import { ElMessage } from 'element-plus'
+import { getBaseUrl } from "@/utils/globalConfigUtil.js";
 
 // 创建一个axios实例
 const _axios = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL
+    baseURL: getBaseUrl()
 })
 
 // 请求拦截器
