@@ -2,8 +2,13 @@
     import { useDark, useToggle } from '@vueuse/core'
     import { useRouter } from "vue-router";
     import { useAsideStore } from "@/store/aside/index.js";
+    import { useHeaderStore } from "@/store/header/index.js";
+    import { storeToRefs } from "pinia";
     
     const router = useRouter()
+    
+    const headerStore = useHeaderStore()
+    const {currentHeader} = storeToRefs(headerStore)
     
     const isDark = useDark({
         storageKey: 'theme-appearance', //自定义localStorage存储名称
@@ -68,7 +73,7 @@
 <template>
     <div class="header" id="header">
         <div class="l-content">
-            <h1>服务治理增强软件可视化大屏</h1>
+            <h1>服务治理增强软件可视化大屏 -- 当前服务: {{currentHeader.service}}</h1>
         </div>
         <div class="flex-grow">
         </div>
@@ -91,6 +96,14 @@
                             circle
                             @click="router.push('/main'); asideStore.resetActive();"
                         ></el-button>
+                    </el-tooltip>
+                </div>
+                <div>
+                    <el-tooltip content="刷新" placement="bottom">
+                        <el-button icon="Refresh"
+                                   circle
+                                   @click="router.go(0)"
+                        />
                     </el-tooltip>
                 </div>
             </el-space>

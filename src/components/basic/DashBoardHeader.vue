@@ -138,6 +138,7 @@
             display: flex; /* 添加这个属性 */
             align-items: center; /* 确保这个属性在这里 */
             text-align: center;
+            
             .el-space {
                 margin-right: 1rem;
             }
