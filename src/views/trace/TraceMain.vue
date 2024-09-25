@@ -1,12 +1,11 @@
 <script setup>
-    import { onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
+    import { onMounted, reactive, ref } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
-    import { getEndPointAndTraceIdListByServiceName, getSpanTopology } from "@/api/trace/index.js";
-    import { useStorage } from "@vueuse/core";
-    import * as echarts from "echarts";
+    import { getEndPointAndTraceIdListByServiceName } from "@/api/trace/index.js";
     import { useRouter } from "vue-router";
-    import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
+    import TraceTopologyDiagram from "@/components/screen/TraceTopologyDiagram.vue";
     
+    const innerService = ref(true)
     
     const serviceName = ref()
     const router = useRouter()
@@ -65,19 +64,10 @@
         pageSize: 10
     })
     
-    let resizeObserver;
-    
-    const handleResize = () => {
-        if (!spanTopologyChart) {
-            return;
-        }
-        spanTopologyChart.resize()
-    };
+    const traceTopologyDiagramRef = ref()
+    const traceId = ref('')
     
     onMounted(async () => {
-        window.addEventListener('resize', handleResize);
-        resizeObserver = new ResizeObserver(() => handleResize);
-        resizeObserver.observe(document.getElementById('trace-topology-div'));
         if (router.currentRoute.value.query.serviceName) {
             endpointsQueryDto.serviceName = router.currentRoute.value.query.serviceName
             serviceName.value = ['default', router.currentRoute.value.query.serviceName]
@@ -91,14 +81,9 @@
             traceId.value = router.currentRoute.value.query.traceId
         }
         if (router.currentRoute.value.query.serviceName && router.currentRoute.value.query.traceId) {
-            await getTopology()
+            await traceTopologyDiagramRef.value.getTopology()
         }
     })
-    
-    onBeforeUnmount(() => {
-        window.removeEventListener('resize', handleResize);
-        resizeObserver.disconnect();
-    });
     
     const total = ref(0)
     
@@ -107,9 +92,7 @@
         endpointTraceIdArr.value.splice(0, endpointTraceIdArr.value.length)
         endpoints.splice(0, endpoints.length)
         total.value = 0
-        if (spanTopologyChart) {
-            spanTopologyChart.dispose();
-        }
+        traceTopologyDiagramRef.value.disposeSpanTopology()
         traceIdList.value = []
         traceId.value = ''
         // 拿到叶子结点元素
@@ -156,110 +139,8 @@
         })
     }
     
-    const traceId = ref()
-    
-    const topology = ref({
-        name: '',
-        value: '',
-        collapsed: false,
-        children: []
-    })
-    
-    const innerService = ref(true)
-    
-    const getTopology = async () => {
-        if (traceId.value === '' || traceId.value === undefined) {
-            return
-        }
-        // 拿到traceId
-        const data = await getSpanTopology(traceId.value, serviceName.value[1], innerService.value)
-        if (data === null) {
-            return
-        }
-        topology.value = data.result
-        drawSpanTopology()
-    }
-    
-    let spanTopologyChart
-    // 之前那个vue开头的变量现在一直是auto了 不能用 用现在这个
-    const checkIsDark = useStorage('theme-appearance', 'auto')
-    // 使用自定义监听器来重新绘制图表
-    watch(checkIsDark, () => {
-        drawSpanTopology()
-    })
-    
-    function formatSpan(span) {
-        const status = span.endTime === '-1' ? '异常或离线' : '正常'
-        const startTime = timestampToJsTimeStr(span.startTime)
-        const endTime = span.endTime === '-1' ? '该Span异常' : timestampToJsTimeStr(span.endTime)
-        const localIp = span.localEndPoint.ip === '' ? 'null' : span.localEndPoint.ip
-        const remoteIp = span.remoteEndPoint.ip === '' ? 'null' : span.remoteEndPoint.ip
-        return `<div>
-                    <div>
-                        <b>当前Span详细情况</b>
-                    </div>
-                    <ul>
-                        <li>id: ${span.id}</li>
-                        <li>名称: ${span.name}</li>
-                        <li>所属服务: ${span.serviceName}</li>
-                        <li>开始时间: ${startTime}</li>
-                        <li>结束时间: ${endTime}</li>
-                        <li>span状态: ${status}</li>
-                        <li>父节点SpanId: ${span.parentSpanId}</li>
-                        <li>所属endPoint: ${span.localEndPoint.serviceName}</li>
-                        <li>所属endPoint ip与端口: ${localIp}:${span.localEndPoint.port}</li>
-                        <li>远程endPoint: ${span.remoteEndPoint.serviceName}</li>
-                        <li>远程endPoint ip与端口: ${remoteIp}:${span.remoteEndPoint.port}</li>
-                    </ul>
-                </div>`;
-    }
-    
-    const drawSpanTopology = () => {
-        if (spanTopologyChart) {
-            spanTopologyChart.dispose(); //销毁
-        }
-        let option = {
-            title: {
-                subtext: '绿色为正常Span节点，红色为异常Span节点',
-                align: 'right'
-            },
-            backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
-            tooltip: {
-                trigger: 'item',
-                triggerOn: 'mousemove',
-                backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
-                textStyle: {
-                    color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
-                },
-                // 自定义提示框内容的回调函数 params参数实际存储的就是SpanTreeNodeVo对象
-                formatter: function (params) {
-                    // 通过修改SpanTreeNodeVo，我们把Span对象也放到params中
-                    return formatSpan(params.data.span);
-                }
-            },
-            series: [
-                {
-                    type: 'tree',
-                    symbol: 'circle', // 标记的图形
-                    roam: true,//移动+放大
-                    expandAndCollapse: true,
-                    animationDuration: 550,
-                    animationDurationUpdate: 750,
-                    label: {
-                        position: 'right',
-                        verticalAlign: 'middle',
-                        fontSize: 9
-                    },
-                    initialTreeDepth: -1,
-                    data: [topology.value]
-                }
-            ]
-        }
-        spanTopologyChart =
-            echarts.init(
-                document.getElementById('trace-topology-div'),
-                checkIsDark.value === 'dark' ? 'dark' : 'light')
-        spanTopologyChart.setOption(option)
+    const callTraceChart = async () => {
+        await traceTopologyDiagramRef.value.getTopology(traceId.value)
     }
 </script>
 
@@ -343,7 +224,7 @@
                                                placeholder="请在左侧选择Endpoint后，选择TraceId"
                                                style="width: 90%"
                                                clearable
-                                               @change="getTopology"
+                                               @change="callTraceChart()"
                                     >
                                         <el-option
                                             v-for="item in traceIdList"
@@ -361,13 +242,17 @@
                                         inactive-text="查看当前trace下的所有span"
                                         v-model="innerService"
                                         size="small"
-                                        @change="getTopology"
+                                        @change="callTraceChart()"
                                     />
                                 </el-form-item>
                             </el-col>
                         </el-row>
                     </div>
-                    <div id="trace-topology-div"></div>
+                    <traceTopologyDiagram
+                        ref="traceTopologyDiagramRef"
+                        :serviceName="serviceName"
+                        :innerService="innerService"
+                    />
                 </el-col>
             </el-row>
         </el-card>
