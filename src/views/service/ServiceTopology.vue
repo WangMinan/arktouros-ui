@@ -18,6 +18,8 @@
         })
         cb(results)
     }
+    
+    const serviceTopologyRef = ref()
 </script>
 
 <template>
@@ -39,7 +41,7 @@
                 :fetch-suggestions="querySearch"
                 clearable
                 placeholder="请选择命名空间--默认为default"
-                @select="getTopology"
+                @select="serviceTopologyRef.getTopology()"
                 style="width: 40%"
             >
                 <template #prepend>
@@ -49,7 +51,13 @@
                 </template>
             </el-autocomplete>
         </div>
-        <service-topology-diagram :namespace="namespace"/>
+        <service-topology-diagram
+            ref="serviceTopologyRef"
+            :namespace="namespace"
+            :symbolSize="50"
+            :repulsion="200"
+            :edgeLength="100"
+        />
     </div>
 </template>
 

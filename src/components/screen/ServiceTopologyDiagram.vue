@@ -6,7 +6,10 @@
     
     // 使用props从父组件向子组件传参
     const props = defineProps({
-        namespace: String
+        namespace: String,
+        symbolSize: Number,
+        repulsion: Number,
+        edgeLength: Number
     });
     
     const nodes = ref([])
@@ -22,7 +25,7 @@
                     draggable: true,
                     name: item.nodeObject.name,
                     category: item.nodeObject.status ? 0 : 1,
-                    symbolSize: [50, 50], // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
+                    symbolSize: [props.symbolSize, props.symbolSize], // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
                     item: item, // 传递给toolTip的附加信息
                     itemStyle: {
                         color: item.nodeObject.status ? "#6EF780": "#FF2700",
@@ -42,6 +45,10 @@
             }
         })
     }
+    
+    defineExpose({
+        getTopology
+    })
     
     let resizeObserver;
     
@@ -129,8 +136,8 @@
                         }
                     },
                     force: {
-                        repulsion: 200, // 节点之间的斥力因子。[ default: 50 ]
-                        edgeLength: 100, // 边的两个节点之间的距离。这个距离也会受 repulsion 影响。[ default: 30 ]
+                        repulsion: props.repulsion, // 节点之间的斥力因子。[ default: 50 ]
+                        edgeLength: props.edgeLength, // 边的两个节点之间的距离。这个距离也会受 repulsion 影响。[ default: 30 ]
                         layoutAnimation: true, // 在每次迭代结束后开始一次布局更新的动画。[ default: false ]
                     },
                     animationEasingUpdate: "quinticInOut", // 数据更新动画的缓动效果。[ default: cubicOut ]    "quinticInOut"

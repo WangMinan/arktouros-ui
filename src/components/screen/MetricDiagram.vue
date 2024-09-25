@@ -14,6 +14,7 @@
     });
     
     function formTmpQueryDto() {
+        console.log(props.startAndStopTime[1].toString())
         // 数值预处理 深拷贝
         const tmpQueryDto = JSON.parse(JSON.stringify(props.metricQueryDto))
         if (tmpQueryDto.serviceName === 'null') {

@@ -1,6 +1,6 @@
 <script setup>
-    
     import DataScreenHeader from "@/components/screen/DataScreenHeader.vue";
+    import DataScreenMain from "@/views/dataScreen/DataScreenMain.vue";
 </script>
 
 <template>
@@ -9,7 +9,9 @@
             <el-header>
                 <DataScreenHeader/>
             </el-header>
-            <el-main></el-main>
+            <el-main>
+                <DataScreenMain/>
+            </el-main>
         </el-container>
     </div>
 </template>
