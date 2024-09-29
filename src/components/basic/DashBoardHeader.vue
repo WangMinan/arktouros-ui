@@ -2,7 +2,7 @@
     import { useDark, useToggle } from '@vueuse/core'
     import { useRouter } from "vue-router";
     import { useAsideStore } from "@/store/aside/index.js";
-    import { getBigScreenUrl } from "@/utils/globalConfigUtil.js";
+    import { getBigScreenUrl } from "@/utils/arktourosUiConfigUtil.js";
     
     const router = useRouter()
     

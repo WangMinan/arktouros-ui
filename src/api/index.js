@@ -2,7 +2,7 @@ import axios from 'axios'
 import { start, stop } from '@/utils/nprogress.js'
 import router from '@/router/index.js'
 import { ElMessage } from 'element-plus'
-import { getBaseUrl } from "@/utils/globalConfigUtil.js";
+import { getBaseUrl } from "@/utils/arktourosUiConfigUtil.js";
 
 // 创建一个axios实例
 const _axios = axios.create({

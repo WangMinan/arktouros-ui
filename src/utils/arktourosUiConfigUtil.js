@@ -1,7 +1,7 @@
 // 从 window 对象获取配置
 // 因为动态配置挂载在 window 的 admin.config 属性
 export function _window(key) {
-    if (window.hasOwnProperty('globalConfig')) {
+    if (window.hasOwnProperty('arktourosUiConfig')) {
         return window.globalConfig[key]
     }
     return null
