@@ -1,0 +1,1 @@
+function n(o){return window.hasOwnProperty("arktourosUiConfig")?window.globalConfig[o]:null}function r(){return n("VITE_BASE_URL")?n("VITE_BASE_URL"):"https://arktouros-server.wangminan.me/api/v0"}function t(){return n("VITE_BIG_SCREEN_URL")?n("VITE_BIG_SCREEN_URL"):"http://127.0.0.1:50053"}export{r as a,t as g};
