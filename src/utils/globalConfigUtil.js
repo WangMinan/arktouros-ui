@@ -13,3 +13,7 @@ export function getBaseUrl() {
     // 否则从 env 配置获取
     return _window('VITE_BASE_URL') ? _window('VITE_BASE_URL') : import.meta.env.VITE_BASE_URL
 }
+
+export function getBigScreenUrl() {
+    return _window('VITE_BIG_SCREEN_URL') ? _window('VITE_BIG_SCREEN_URL') : import.meta.env.VITE_BIG_SCREEN_URL
+}

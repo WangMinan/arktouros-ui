@@ -2,6 +2,7 @@
     import { useDark, useToggle } from '@vueuse/core'
     import { useRouter } from "vue-router";
     import { useAsideStore } from "@/store/aside/index.js";
+    import { getBigScreenUrl } from "@/utils/globalConfigUtil.js";
     
     const router = useRouter()
     
@@ -63,6 +64,11 @@
             )
         })
     }
+
+    const goToScreen = () => {
+        asideStore.resetActive();
+        window.location.href = getBigScreenUrl()
+    }
 </script>
 
 <template>
@@ -96,7 +102,7 @@
                         <el-button
                             icon="Histogram"
                             circle
-                            @click="router.push('/screen'); asideStore.resetActive();"
+                            @click="goToScreen()"
                         ></el-button>
                     </el-tooltip>
                 </div>
