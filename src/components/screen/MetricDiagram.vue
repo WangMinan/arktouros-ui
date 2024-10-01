@@ -148,7 +148,6 @@
         });
     };
     
-    
     function getBasicOption(metric, index) {
         return {
             backgroundColor: checkIsDark.value === 'dark' ? '#212224' : '#fff',
