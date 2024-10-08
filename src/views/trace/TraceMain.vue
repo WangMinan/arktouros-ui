@@ -140,7 +140,7 @@
     }
     
     const callTraceChart = async () => {
-        await traceTopologyDiagramRef.value.getTopology(traceId.value)
+        await traceTopologyDiagramRef.value.getTopology(traceId.value, innerService.value)
     }
 </script>
 
@@ -251,7 +251,6 @@
                     <traceTopologyDiagram
                         ref="traceTopologyDiagramRef"
                         :serviceName="serviceName"
-                        :innerService="innerService"
                     />
                 </el-col>
             </el-row>
