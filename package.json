@@ -20,7 +20,7 @@
     "less-loader": "^12.2.0",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
-    "pinia-plugin-persistedstate": "^3.2.1",
+    "pinia-plugin-persistedstate": "^4.1.2",
     "vite-plugin-top-level-await": "^1.4.1",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2"
