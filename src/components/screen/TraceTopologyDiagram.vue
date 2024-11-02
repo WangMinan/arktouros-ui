@@ -72,10 +72,11 @@
         spanTopologyChart.resize()
     };
     
-    function formatSpan(span) {
-        const status = span.endTime === '-1' ? '异常或离线' : '正常'
+    function formatSpan(params) {
+        const span = params.data.span
+        const status = params.color === "#FFEE00" ? '异常' : '正常'
         const startTime = timestampToJsTimeStr(span.startTime)
-        const endTime = span.endTime === '-1' ? '该Span异常' : timestampToJsTimeStr(span.endTime)
+        const endTime = span.endTime === '-1' ? '该Span超时' : timestampToJsTimeStr(span.endTime)
         const localIp = span.localEndPoint.ip === '' ? 'null' : span.localEndPoint.ip
         const remoteIp = span.remoteEndPoint.ip === '' ? 'null' : span.remoteEndPoint.ip
         return `<div>
@@ -117,8 +118,9 @@
                 },
                 // 自定义提示框内容的回调函数 params参数实际存储的就是SpanTreeNodeVo对象
                 formatter: function (params) {
+                    console.log(params)
                     // 通过修改SpanTreeNodeVo，我们把Span对象也放到params中
-                    return formatSpan(params.data.span);
+                    return formatSpan(params);
                 }
             },
             series: [
