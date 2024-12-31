@@ -127,6 +127,7 @@
                 {
                     type: 'tree',
                     symbol: 'circle', // 标记的图形
+                    symbolSize: 40,
                     roam: true,//移动+放大
                     expandAndCollapse: true,
                     animationDuration: 550,
