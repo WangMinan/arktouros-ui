@@ -1,6 +1,11 @@
 <script setup>
     import { onMounted, reactive, ref } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
+    import { deleteAllDataFromDB } from "@/api/common/index.js";
+    import { ElLoading, ElMessage } from "element-plus";
+    import { useRouter } from "vue-router";
+    
+    const router = useRouter()
     
     const querySearch = async (queryString, cb) => {
         const data = await getNamespaceList(queryString)
@@ -82,12 +87,30 @@
     }
     
     const tmpService = ref({})
+    
+    const deleteAllData = async () => {
+        const loading = ElLoading.service({
+            lock: true,
+            text: '正在执行数据运维操作，请等待。',
+            background: 'rgba(0, 0, 0, 0.7)',
+        })
+        try {
+            const data = await deleteAllDataFromDB()
+            if (data === null || data.result.length === 0) {
+                return
+            }
+            ElMessage.success('删除所有数值数据成功')
+        } finally {
+            loading.close()
+            router.go(0)
+        }
+    }
 </script>
 
 <template>
     <div class="security-main-container">
         <!-- 面包屑 -->
-        <el-row>
+        <el-row class="breadcrumb-header-row">
             <el-breadcrumb separator-icon="ArrowRight">
                 <el-breadcrumb-item>
                     <a href="/main">主页</a>
@@ -96,6 +119,16 @@
                     <a href="/main/service">服务概览</a>
                 </el-breadcrumb-item>
             </el-breadcrumb>
+            <el-tooltip placement="bottom">
+                <template #content>
+                    点击该按钮将会<b style="color: red">删除数据库中所有数据</b>，请确保您知晓该操作将带来的后果。 <br/>
+                    删除操作将锁定用户界面直至删除完成。 <br/>
+                    如果您处于<b style="color: red">离线数据批量导入模式</b>，该操作将同时删除您存储在输入日志文件夹下的所有日志文件。
+                </template>
+                <el-button type="danger" @click="deleteAllData">
+                    删除所有数据
+                </el-button>
+            </el-tooltip>
         </el-row>
         <!-- 表格card -->
         <el-card class="table-card">
@@ -234,8 +267,14 @@
         width: 100%;
         height: 100%;
         
+        .breadcrumb-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
         .table-card {
-            margin-top: 2%;
+            margin-top: 1%;
             
             .table-div {
                 margin-top: 2%;
