@@ -48,3 +48,20 @@ export const getLogList = async (logQueryDto) => {
     }
     return null
 }
+
+export const deleteAllLogsFromDB = async () => {
+    try {
+        const {data} = await axios.delete('/logs')
+        if (data.code !== null && data.code === 2000) {
+            return data
+        } else if (data.code !== null){
+            ElMessage.error(`删除所有日志失败, ${data.message}`)
+            return null
+        }
+        ElMessage.error('删除所有日志失败')
+        return null
+    } catch (e) {
+        ElMessage.error(`删除所有日志失败, ${e.message}`)
+    }
+    return null
+}

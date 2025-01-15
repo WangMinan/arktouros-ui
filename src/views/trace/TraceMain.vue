@@ -158,6 +158,7 @@
             ElMessage.success('删除所有链路数据成功')
         } finally {
             loading.close()
+            router.go(0)
         }
     }
 </script>

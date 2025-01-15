@@ -1,9 +1,9 @@
 <script setup>
     import { onMounted, reactive, ref } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
-    import { getLogList, getSeverityTextList } from "@/api/log/index.js";
+    import { deleteAllLogsFromDB, getLogList, getSeverityTextList } from "@/api/log/index.js";
     import { useRouter } from "vue-router";
-    import { ElMessage } from "element-plus";
+    import { ElLoading, ElMessage } from "element-plus";
     import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
     import { useAsideStore } from "@/store/aside/index.js";
     
@@ -33,11 +33,6 @@
         if (startAndStopTime.value.length === 2) {
             tmpLogQueryDto.startTimestamp = Date.parse(startAndStopTime.value[0])
             tmpLogQueryDto.endTimestamp = Date.parse(startAndStopTime.value[1])
-        } else if (import.meta.env.VITE_NODE_ENV === 'production') {
-            ElMessage.warning("当前为正式环境, 时间范围置空时默认获取近半个小时内的日志")
-            const now = new Date()
-            tmpLogQueryDto.startTimestamp = now.getTime() - 30 * 60 * 1000
-            tmpLogQueryDto.endTimestamp = now.getTime()
         } else {
             // 没输入时间 置空字段
             tmpLogQueryDto.startTimestamp = null
@@ -175,12 +170,31 @@
             logQueryDto.value.serviceName = null
         }
     }
+    
+    const deleteAllLogs = async () => {
+        const loading = ElLoading.service({
+            lock: true,
+            text: '正在执行数据运维操作，请等待。',
+            background: 'rgba(0, 0, 0, 0.7)',
+        })
+        try {
+            const data = await deleteAllLogsFromDB()
+            if (data === null || data.result.length === 0) {
+                return
+            }
+            ElMessage.success('删除所有链路数据成功')
+        } finally {
+            loading.close()
+            logList.value.splice(0, logList.value.length)
+            router.go(0)
+        }
+    }
 </script>
 
 <template>
     <div class="log-main-container">
         <!-- 面包屑导航 -->
-        <el-row>
+        <el-row class="breadcrumb-header-row">
             <el-breadcrumb separator-icon="ArrowRight">
                 <el-breadcrumb-item>
                     <a href="/main">主页</a>
@@ -189,6 +203,7 @@
                     <a href="/main/log">日志概览</a>
                 </el-breadcrumb-item>
             </el-breadcrumb>
+            <el-button type="warning" @click="deleteAllLogs">删除所有日志数据</el-button>
         </el-row>
         <el-card class="log-card">
             <!-- 搜索区 -->
@@ -331,6 +346,12 @@
 </template>
 
 <style scoped lang="less">
+    .breadcrumb-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
     .log-card {
         margin-top: 2%;
         

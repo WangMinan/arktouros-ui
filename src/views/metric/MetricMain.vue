@@ -2,6 +2,11 @@
     import { reactive, ref, } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
     import MetricDiagram from "@/components/screen/MetricDiagram.vue";
+    import { ElLoading, ElMessage } from "element-plus";
+    import { deleteAllMetricsFromDB } from "@/api/metric/index.js";
+    import { useRouter } from "vue-router";
+    
+    const router = useRouter()
     
     const metricQueryDto = ref({
         serviceName: '',
@@ -70,11 +75,29 @@
     }
     
     const metricDiagramRef = ref()
+    
+    const deleteAllMetrics = async () => {
+        const loading = ElLoading.service({
+            lock: true,
+            text: '正在执行数据运维操作，请等待。',
+            background: 'rgba(0, 0, 0, 0.7)',
+        })
+        try {
+            const data = await deleteAllMetricsFromDB()
+            if (data === null || data.result.length === 0) {
+                return
+            }
+            ElMessage.success('删除所有数值数据成功')
+        } finally {
+            loading.close()
+            router.go(0)
+        }
+    }
 </script>
 
 <template>
     <!-- 面包屑 -->
-    <el-row>
+    <el-row class="breadcrumb-header-row">
         <el-breadcrumb separator-icon="ArrowRight">
             <el-breadcrumb-item>
                 <a href="/main">主页</a>
@@ -83,6 +106,7 @@
                 <a href="/main/metric">数值概览</a>
             </el-breadcrumb-item>
         </el-breadcrumb>
+        <el-button type="warning" @click="deleteAllMetrics">删除所有数值数据</el-button>
     </el-row>
     <el-card class="metric-card" id="metricCardRef">
         <!-- 搜索条 -->
@@ -136,7 +160,13 @@
 </template>
 
 <style scoped lang="less">
+    .breadcrumb-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
     .metric-card {
-        margin-top: 2%;
+        margin-top: 1%;
     }
 </style>

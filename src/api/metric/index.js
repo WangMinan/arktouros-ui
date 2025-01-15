@@ -24,3 +24,20 @@ export const getMetricList = async (metricQueryDto) => {
     }
     return null
 }
+
+export const deleteAllMetricsFromDB = async () => {
+    try {
+        const {data} = await axios.delete('/metrics')
+        if (data.code !== null && data.code === 2000) {
+            return data
+        } else if (data.code !== null){
+            ElMessage.error(`删除所有数值失败, ${data.message}`)
+            return null
+        }
+        ElMessage.error('删除所有数值失败')
+        return null
+    } catch (e) {
+        ElMessage.error(`删除所有数值失败, ${e.message}`)
+    }
+    return null
+}
