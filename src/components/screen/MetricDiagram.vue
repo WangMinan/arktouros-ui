@@ -1,5 +1,5 @@
 <script setup>
-    import { defineProps, onBeforeUnmount, onMounted, ref, watch } from "vue";
+    import { onBeforeUnmount, onMounted, ref, watch } from "vue";
     import { useStorage } from "@vueuse/core";
     import { ElLoading, ElMessage } from "element-plus";
     import * as echarts from "echarts";

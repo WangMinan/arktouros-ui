@@ -1,9 +1,10 @@
 <script setup>
     import { onMounted, reactive, ref } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
-    import { getEndPointAndTraceIdListByServiceName } from "@/api/trace/index.js";
+    import { deleteAllSpansFromDB, getEndPointAndTraceIdListByServiceName } from "@/api/trace/index.js";
     import { useRouter } from "vue-router";
     import TraceTopologyDiagram from "@/components/screen/TraceTopologyDiagram.vue";
+    import { ElLoading, ElMessage } from "element-plus";
     
     const innerService = ref(true)
     
@@ -142,12 +143,29 @@
     const callTraceChart = async () => {
         await traceTopologyDiagramRef.value.getTopology(traceId.value, innerService.value)
     }
+    
+    const deleteAllSpans = async () => {
+        const loading = ElLoading.service({
+            lock: true,
+            text: '正在执行数据运维操作，请等待。',
+            background: 'rgba(0, 0, 0, 0.7)',
+        })
+        try {
+            const data = await deleteAllSpansFromDB()
+            if (data === null || data.result.length === 0) {
+                return
+            }
+            ElMessage.success('删除所有链路数据成功')
+        } finally {
+            loading.close()
+        }
+    }
 </script>
 
 <template>
     <div class="trace-main-container">
         <!-- 面包屑导航 -->
-        <el-row>
+        <el-row class="breadcrumb-header-row">
             <el-breadcrumb separator-icon="ArrowRight">
                 <el-breadcrumb-item>
                     <a href="/main">主页</a>
@@ -156,6 +174,7 @@
                     <a href="/main/trace">链路信息</a>
                 </el-breadcrumb-item>
             </el-breadcrumb>
+            <el-button type="warning" @click="deleteAllSpans">删除所有链路数据</el-button>
         </el-row>
         <el-card class="table-card">
             <!-- 级联选择框 -->
@@ -263,8 +282,14 @@
         width: 100%;
         height: 100%;
         
+        .breadcrumb-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
         .table-card {
-            margin-top: 2%;
+            margin-top: 1%;
             
             .cascader-div {
                 display: flex;
@@ -288,7 +313,7 @@
                 }
                 
                 .pagination-div {
-                    margin-top: 2%;
+                    margin-top: 1%;
                     width: 100%;
                     display: flex;
                     justify-content: center;
@@ -296,9 +321,9 @@
             }
             
             #trace-topology-div {
-                margin-top: 2%;
+                margin-top: 1%;
                 width: 98%;
-                height: 400px;
+                height: 380px;
             }
         }
     }

@@ -13,8 +13,7 @@
     const total = ref(0)
     const logList = ref([])
     const serviceName = ref()
-    const startTime = ref(0)
-    const stopTime = ref(0)
+    const startAndStopTime = ref([])
     const logQueryDto = ref({
         pageNum: 1,
         pageSize: 10,
@@ -31,9 +30,14 @@
         // 深拷贝
         const tmpLogQueryDto = JSON.parse(JSON.stringify(logQueryDto.value))
         // 文本时间转long型时间戳
-        if (startTime.value !== 0 && stopTime.value !== 0) {
-            tmpLogQueryDto.startTimestamp = startTime.value
-            tmpLogQueryDto.endTimestamp = stopTime.value
+        if (startAndStopTime.value.length === 2) {
+            tmpLogQueryDto.startTimestamp = Date.parse(startAndStopTime.value[0])
+            tmpLogQueryDto.endTimestamp = Date.parse(startAndStopTime.value[1])
+        } else if (import.meta.env.VITE_NODE_ENV === 'production') {
+            ElMessage.warning("当前为正式环境, 时间范围置空时默认获取近半个小时内的日志")
+            const now = new Date()
+            tmpLogQueryDto.startTimestamp = now.getTime() - 30 * 60 * 1000
+            tmpLogQueryDto.endTimestamp = now.getTime()
         } else {
             // 没输入时间 置空字段
             tmpLogQueryDto.startTimestamp = null
@@ -205,25 +209,13 @@
                                   placeholder="请输入一个traceId" clearable/>
                     </el-form-item>
                     <el-form-item label="起止时间">
-                        <!--                        <el-date-picker-->
-                        <!--                            v-model="startAndStopTime"-->
-                        <!--                            type="datetimerange"-->
-                        <!--                            range-separator="到"-->
-                        <!--                            start-placeholder="开始时间"-->
-                        <!--                            end-placeholder="结束时间"-->
-                        <!--                        />-->
-                        <el-tooltip effect="light"
-                                    content="开始时间戳"
-                                    placement="top"
-                                    :enterable="false">
-                            <el-input-number v-model="startTime" :min="0"/>
-                        </el-tooltip>
-                        <el-tooltip effect="light"
-                                    content="结束时间戳"
-                                    placement="top"
-                                    :enterable="false">
-                            <el-input-number v-model="stopTime" :min="0"/>
-                        </el-tooltip>
+                        <el-date-picker
+                            v-model="startAndStopTime"
+                            type="datetimerange"
+                            range-separator="到"
+                            start-placeholder="开始时间"
+                            end-placeholder="结束时间"
+                        />
                     </el-form-item>
                     <el-form-item label="日志级别">
                         <el-autocomplete

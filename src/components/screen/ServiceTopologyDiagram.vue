@@ -1,5 +1,5 @@
 <script setup>
-    import { defineProps, onBeforeUnmount, onMounted, ref, watch } from "vue";
+    import { onBeforeUnmount, onMounted, ref, watch } from "vue";
     import { getServiceTopology } from "@/api/service/index.js";
     import * as echarts from 'echarts';
     import { useStorage } from '@vueuse/core'

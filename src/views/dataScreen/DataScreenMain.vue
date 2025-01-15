@@ -8,7 +8,8 @@
     import { getEndPointAndTraceIdListByServiceName } from "@/api/trace/index.js";
     import MetricDiagram from "@/components/screen/MetricDiagram.vue";
     import { useHeaderStore } from "@/store/header/index.js";
-    import { storeToRefs } from "pinia";
+    // import { storeToRefs } from "pinia";
+    import { getServiceList } from "@/api/service/index.js";
     
     const serviceName = ref('')
     
@@ -20,7 +21,7 @@
     })
     
     const headerStore = useHeaderStore()
-    const {currentHeader} = storeToRefs(headerStore)
+    // const {currentHeader} = storeToRefs(headerStore)
     
     const logQueryDto = ref({
         pageNum: 1,
@@ -43,19 +44,19 @@
     })
     
     const setServiceName = async () => {
-        // const data = await getServiceList(baseQueryDto)
-        // if (data === null) {
-        //     serviceName.value = ''
-        // }
-        // const serviceNameList = []
-        // data.result.data.map(item => {
-        //     serviceNameList.push(item.name)
-        // })
-        // serviceName.value = serviceNameList[Math.floor(Math.random() * serviceNameList.length)]
-        serviceName.value = 'service_f'
-        logQueryDto.value.serviceName = serviceName.value
-        endpointsQueryDto.serviceName = serviceName.value
-        metricQueryDto.value.serviceName = serviceName.value
+        const data = await getServiceList(baseQueryDto)
+        if (data === null) {
+            serviceName.value = ''
+        }
+        const serviceNameList = []
+        data.result.data.map(item => {
+            serviceNameList.push(item.name)
+        })
+        serviceName.value = serviceNameList[Math.floor(Math.random() * serviceNameList.length)]
+        // serviceName.value = 'service_f'
+        // logQueryDto.value.serviceName = serviceName.value
+        // endpointsQueryDto.serviceName = serviceName.value
+        // metricQueryDto.value.serviceName = serviceName.value
         headerStore.$patch((state) => {
             state.currentHeader.service = serviceName.value
         })

@@ -46,3 +46,21 @@ export const getSpanTopology = async (traceId, serviceName, innerService) => {
     }
     return null
 }
+
+
+export const deleteAllSpansFromDB = async () => {
+    try {
+        const {data} = await axios.delete('/trace/spans')
+        if (data.code !== null && data.code === 2000) {
+            return data
+        } else if (data.code !== null){
+            ElMessage.error(`删除所有span失败, ${data.message}`)
+            return null
+        }
+        ElMessage.error('删除所有span失败')
+        return null
+    } catch (e) {
+        ElMessage.error(`删除所有span失败, ${e.message}`)
+    }
+    return null
+}
