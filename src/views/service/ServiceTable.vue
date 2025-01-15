@@ -102,6 +102,7 @@
             ElMessage.success('删除所有数值数据成功')
         } finally {
             loading.close()
+            serviceList.value = []
             router.go(0)
         }
     }
