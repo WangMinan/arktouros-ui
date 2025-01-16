@@ -109,8 +109,7 @@
         <el-tooltip placement="bottom">
             <template #content>
                 点击该按钮将会<b style="color: red">删除所有数值数据</b>，请确保您知晓该操作将带来的后果。 <br/>
-                删除操作将锁定用户界面直至删除完成。 <br/>
-                如果您处于<b style="color: red">离线数据批量导入模式</b>，该操作将同时删除您存储在输入日志文件夹下的所有日志文件。
+                删除操作将锁定用户界面直至删除完成。
             </template>
             <el-button type="danger" @click="deleteAllMetrics">
                 删除所有数值数据
