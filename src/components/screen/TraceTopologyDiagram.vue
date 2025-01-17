@@ -118,7 +118,6 @@
                 },
                 // 自定义提示框内容的回调函数 params参数实际存储的就是SpanTreeNodeVo对象
                 formatter: function (params) {
-                    console.log(params)
                     // 通过修改SpanTreeNodeVo，我们把Span对象也放到params中
                     return formatSpan(params);
                 }
@@ -134,7 +133,7 @@
                     label: {
                         position: 'right',
                         verticalAlign: 'middle',
-                        fontSize: 16
+                        fontSize: 12
                     },
                     initialTreeDepth: -1,
                     data: [topology.value]

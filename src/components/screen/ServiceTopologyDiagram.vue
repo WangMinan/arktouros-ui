@@ -70,7 +70,7 @@
     const checkIsDark = useStorage('theme-appearance', 'auto')
     
     function formatService(service) {
-        const status = service.status ? '正常' : '异常或离线'
+        const status = service.status ? '正常' : '超时异常或离线'
         const tagsStr = service.tags.length === 0 ? '[]' : JSON.stringify(service.tags)
         
         
@@ -150,7 +150,7 @@
                             }
                         },
                         {
-                            name: '服务离线或状态未知',
+                            name: '超时异常或离线',
                             itemStyle: {
                                 color: "#FF2700"
                             }
