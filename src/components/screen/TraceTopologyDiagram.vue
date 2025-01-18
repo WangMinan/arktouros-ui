@@ -156,8 +156,8 @@
 
 <style scoped lang="less">
     #trace-topology-div {
-        margin-top: 2%;
+        margin-top: 1%;
         width: 98%;
-        height: 400px;
+        height: 365px;
     }
 </style>

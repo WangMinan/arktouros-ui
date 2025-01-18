@@ -365,12 +365,6 @@
                     justify-content: center;
                 }
             }
-            
-            #trace-topology-div {
-                margin-top: 1%;
-                width: 98%;
-                height: 380px;
-            }
         }
     }
 </style>

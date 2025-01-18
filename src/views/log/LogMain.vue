@@ -361,7 +361,7 @@
     }
     
     .log-card {
-        margin-top: 2%;
+        margin-top: 1%;
         
         .pagination-div {
             margin-top: 2%;
