@@ -19,13 +19,15 @@
     // 防止父子传参失败
     const {serviceName} = toRefs(props)
     
-    const getTopology = async (traceIdInput, innerService) => {
+    const getTopology = async (traceIdInput, innerService,
+                               startTimestamp, stopTimestamp) => {
         // props传traceId失效 不能挂在input组件上
         if (traceIdInput === '' || traceIdInput === undefined) {
             return
         }
         // 拿到traceId
-        const data = await getSpanTopology(traceIdInput, serviceName.value[1], innerService)
+        const data = await getSpanTopology(traceIdInput, serviceName.value[1],
+            innerService, startTimestamp, stopTimestamp)
         if (data === null) {
             return
         }

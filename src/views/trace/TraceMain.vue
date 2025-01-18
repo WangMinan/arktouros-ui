@@ -7,9 +7,11 @@
     import { ElLoading, ElMessage } from "element-plus";
     
     const innerService = ref(true)
+    const startAndStopTime = ref([])
     
     const serviceName = ref()
     const router = useRouter()
+    
     const traceIdCascaderProps = reactive({
         lazy: true,
         // 指定懒加载方法 node为当前点击的节点，resolve为数据加载完成的回调(必须调用)
@@ -62,7 +64,9 @@
     const endpointsQueryDto = reactive({
         serviceName: '',
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        startTimestamp: '',
+        endTimestamp: ''
     })
     
     const traceTopologyDiagramRef = ref()
@@ -82,7 +86,7 @@
             traceId.value = router.currentRoute.value.query.traceId
         }
         if (router.currentRoute.value.query.serviceName && router.currentRoute.value.query.traceId) {
-            await traceTopologyDiagramRef.value.getTopology()
+            await traceTopologyDiagramRef.value.getTopology(traceId.value, innerService.value, null, null)
         }
     })
     
@@ -98,11 +102,26 @@
         traceId.value = ''
         // 拿到叶子结点元素
         endpointsQueryDto.serviceName = serviceName.value[1]
-        const data = await getEndPointAndTraceIdListByServiceName(endpointsQueryDto)
+        
+        // 深拷贝
+        const tmpQueryDto = JSON.parse(JSON.stringify(endpointsQueryDto))
+        // 文本时间转long型时间戳
+        if (startAndStopTime.value != null && startAndStopTime.value.length === 2) {
+            tmpQueryDto.startTimestamp = Date.parse(startAndStopTime.value[0])
+            tmpQueryDto.endTimestamp = Date.parse(startAndStopTime.value[1])
+        } else {
+            // 没输入时间 置空字段
+            tmpQueryDto.startTimestamp = null
+            tmpQueryDto.endTimestamp = null
+        }
+        
+        const data = await getEndPointAndTraceIdListByServiceName(tmpQueryDto)
         if (data === null || data.result.length === 0) {
             return
         }
         total.value = data.result.length
+        endpointTraceIdArr.value.splice(0, endpointTraceIdArr.value.length)
+        endpoints.splice(0, endpoints.length)
         data.result.forEach(item => {
             endpointTraceIdArr.value.push(item)
         })
@@ -141,7 +160,15 @@
     }
     
     const callTraceChart = async () => {
-        await traceTopologyDiagramRef.value.getTopology(traceId.value, innerService.value)
+        let tmpStart = null
+        let tmpStop = null
+        
+        if (startAndStopTime.value != null && startAndStopTime.value.length === 2) {
+            tmpStart = Date.parse(startAndStopTime.value[0])
+            tmpStop = Date.parse(startAndStopTime.value[1])
+        }
+        
+        await traceTopologyDiagramRef.value.getTopology(traceId.value, innerService.value, tmpStart, tmpStop)
     }
     
     const deleteAllSpans = async () => {
@@ -161,6 +188,8 @@
             router.go(0)
         }
     }
+    
+    
 </script>
 
 <template>
@@ -187,17 +216,31 @@
         </el-row>
         <el-card class="table-card">
             <!-- 级联选择框 -->
-            <div class="cascader-div">
-                <el-cascader
-                    placeholder="请选择对应服务"
-                    v-model="serviceName"
-                    style="width: 40%"
-                    clearable
-                    :props="traceIdCascaderProps"
-                    :show-all-levels="false"
-                    @change="getEndPointAndTraceIdList"
-                />
-            </div>
+            <el-row class="cascader-div">
+                <el-form :inline="true">
+                    <el-form-item label="服务名称">
+                        <el-cascader
+                            placeholder="请选择对应服务"
+                            v-model="serviceName"
+                            clearable
+                            :props="traceIdCascaderProps"
+                            :show-all-levels="false"
+                            @change="getEndPointAndTraceIdList"
+                        />
+                    </el-form-item>
+                    <el-form-item label="起止时间">
+                        <el-date-picker
+                            v-model="startAndStopTime"
+                            type="datetimerange"
+                            range-separator="到"
+                            start-placeholder="开始时间"
+                            end-placeholder="结束时间"
+                            @clear="getEndPointAndTraceIdList"
+                            @change="getEndPointAndTraceIdList"
+                        />
+                    </el-form-item>
+                </el-form>
+            </el-row>
             <el-divider/>
             <el-row :gutter="10" style="margin-top: 2%;">
                 <el-col :span="8">
@@ -299,12 +342,6 @@
         
         .table-card {
             margin-top: 1%;
-            
-            .cascader-div {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
             
             .endpoint-div {
                 width: 100%;

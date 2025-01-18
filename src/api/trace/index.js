@@ -7,7 +7,9 @@ export const getEndPointAndTraceIdListByServiceName = async (endpointsQueryDto) 
             params: {
                 serviceName: endpointsQueryDto.serviceName,
                 pageNum: endpointsQueryDto.pageNum,
-                pageSize: endpointsQueryDto.pageSize
+                pageSize: endpointsQueryDto.pageSize,
+                startTimestamp: endpointsQueryDto.startTimestamp,
+                endTimestamp: endpointsQueryDto.endTimestamp
             }
         })
         if (data.code !== null && data.code === 2000) {
@@ -24,13 +26,15 @@ export const getEndPointAndTraceIdListByServiceName = async (endpointsQueryDto) 
     return null
 }
 
-export const getSpanTopology = async (traceId, serviceName, innerService) => {
+export const getSpanTopology = async (traceId, serviceName, innerService, startTimestamp, stopTimestamp) => {
     try {
         const {data} = await axios.get('/trace/topology', {
             params: {
                 traceId: traceId,
                 serviceName: serviceName,
-                innerService: innerService
+                innerService: innerService,
+                startTimestamp: startTimestamp,
+                stopTimestamp: stopTimestamp
             }
         })
         if (data.code !== null && data.code === 2000) {
