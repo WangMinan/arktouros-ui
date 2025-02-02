@@ -82,12 +82,23 @@
                      alt="service"/>
                 <span>链路</span>
             </el-menu-item>
-            <el-menu-item index="/main/metric">
-                <img class="menu-icon"
-                     src="@/assets/images/side-icons/line-chart.svg"
-                     alt="service"/>
-                <span>数值</span>
-            </el-menu-item>
+            <el-sub-menu index="2">
+                <template #title>
+                    <div class="sub-menu-title">
+                        <img class="menu-icon"
+                             src="@/assets/images/side-icons/line-chart.svg"
+                             alt="service"/>
+                        <!-- 这玩意不会跟着collapse做联动 需要手动调一下 -->
+                        <span v-if="!isCollapse">数值</span>
+                    </div>
+                </template>
+                <el-menu-item index="/main/metric/dashboard">
+                    <span>数值看板</span>
+                </el-menu-item>
+                <el-menu-item index="/main/metric/timeout">
+                    <span>超时统计</span>
+                </el-menu-item>
+            </el-sub-menu>
             <el-menu-item index="/main/log">
                 <img class="menu-icon"
                      src="@/assets/images/side-icons/log.svg"

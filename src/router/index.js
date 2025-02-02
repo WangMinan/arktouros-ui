@@ -1,3 +1,4 @@
+import { pa } from 'element-plus/es/locale/index.mjs'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
@@ -70,7 +71,24 @@ const routes = [
                 meta: {
                     title: 'Arktouros|Metric'
                 },
-                component: () => import("@/views/metric/MetricMain.vue")
+                children: [
+                    {
+                        path: 'dashboard',
+                        name: 'dashboard',
+                        meta: {
+                            title: 'Arktouros|DashBoard'
+                        },
+                        component: () => import("@/views/metric/MetricDashboard.vue")
+                    },
+                    {
+                        path: 'timeout',
+                        name: 'timeout',
+                        meta: {
+                            title: 'Arktouros|Timeout'
+                        },
+                        component: () => import("@/views/metric/MetricTimeout.vue")
+                    }
+                ]
             },
             {
                 path: 'trace',
