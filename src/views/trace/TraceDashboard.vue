@@ -322,9 +322,9 @@
                             </el-col>
                         </el-row>
                     </div>
-                    <traceTopologyDiagram
+                    <trace-topology-diagram
                         ref="traceTopologyDiagramRef"
-                        :serviceName="serviceName"
+                        :service-name="serviceName"
                     />
                 </el-col>
             </el-row>

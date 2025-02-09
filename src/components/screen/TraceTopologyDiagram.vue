@@ -102,9 +102,7 @@
     }
     
     const drawSpanTopology = () => {
-        if (spanTopologyChart) {
-            spanTopologyChart.dispose(); //销毁
-        }
+        disposeSpanTopology()
         let option = {
             title: {
                 subtext: '绿色为正常Span节点，红色为异常Span节点',

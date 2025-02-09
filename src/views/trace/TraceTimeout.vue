@@ -1,11 +1,11 @@
 <script setup>
     import { reactive, ref } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
-    import TraceTopologyDiagram from "@/components/screen/TraceTopologyDiagram.vue";
+    import { getSpanNameList } from "@/api/trace/index.js";
+    import TraceTimeoutDiagram from "@/components/screen/TraceTimeoutDiagram.vue";
     
     const startAndStopTime = ref([])
-    
-    const serviceName = ref()
+    const spanNameCascade = ref()
     
     const traceIdCascaderProps = reactive({
         lazy: true,
@@ -52,18 +52,32 @@
                     nodes.push(item)
                 })
             } else if (level === 2) {
-                // 选中service后的操作 获取span列表
-                nodes.push({
-                    leaf: true,
-                    value: node.value,
-                    label: node.value
+                let tmpStart = null
+                let tmpStop = null
+                if (startAndStopTime.value != null && startAndStopTime.value.length === 2) {
+                    tmpStart = Date.parse(startAndStopTime.value[0])
+                    tmpStop = Date.parse(startAndStopTime.value[1])
+                }
+                const data = await getSpanNameList(node.value, tmpStart, tmpStop)
+                if (data === null) {
+                    return
+                }
+                // 组织成对象的list {value:"xx"}
+                data.result.map(item => {
+                    return {
+                        leaf: true,
+                        value: item,
+                        label: item
+                    }
+                }).forEach(item => {
+                    nodes.push(item)
                 })
             }
             resolve(nodes)
         }
     })
     
-    const traceTopologyDiagramRef = ref()
+    const traceTimeoutDiagramRef = ref()
 </script>
 
 <template>
@@ -86,16 +100,7 @@
             <!-- 级联选择框 -->
             <el-row class="cascader-div">
                 <el-form :inline="true">
-                    <el-form-item label="Span名称">
-                        <el-cascader
-                            placeholder="请选择对应Span名称"
-                            v-model="serviceName"
-                            clearable
-                            :props="traceIdCascaderProps"
-                            :show-all-levels="false"
-                        />
-                    </el-form-item>
-                    <el-form-item label="起止时间">
+                    <el-form-item style="width: 40%" label="起止时间">
                         <el-date-picker
                             v-model="startAndStopTime"
                             type="datetimerange"
@@ -104,17 +109,31 @@
                             end-placeholder="结束时间"
                         />
                     </el-form-item>
+                    <el-form-item style="width: 40%" label="Span名称" prop="spanName">
+                        <el-cascader
+                            style="width: 100%"
+                            placeholder="请选择对应Span名称"
+                            v-model="spanNameCascade"
+                            clearable
+                            :props="traceIdCascaderProps"
+                            :show-all-levels="false"
+                        />
+                    </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="">统计</el-button>
+                        <el-button type="primary"
+                                   @click="traceTimeoutDiagramRef.drawSpanTimoutHistogram()">
+                            统计
+                        </el-button>
                     </el-form-item>
                 </el-form>
             </el-row>
             <el-divider/>
-            <div style="margin-top: 2%;">
+            <div style="margin-top: 1%;">
                 <div>调用超时统计</div>
-                <traceTopologyDiagram
-                    ref="traceTopologyDiagramRef"
-                    :serviceName="serviceName"
+                <trace-timeout-diagram
+                    ref="traceTimeoutDiagramRef"
+                    :spanNameCascade="spanNameCascade"
+                    :startAndStopTime="startAndStopTime"
                 />
             </div>
         </el-card>

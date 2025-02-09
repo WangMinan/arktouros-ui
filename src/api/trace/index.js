@@ -51,6 +51,26 @@ export const getSpanTopology = async (traceId, serviceName, innerService, startT
     return null
 }
 
+export const getSpanNameList = async (serviceName, startTimestamp, stopTimestamp) => {
+    try {
+        const {data} = await axios.get('/trace/spanNames', {
+            params: {
+                serviceName: serviceName,
+                startTimestamp: startTimestamp,
+                stopTimestamp: stopTimestamp
+            }
+        })
+        if (data.code !== null && data.code === 2000) {
+            return data
+        } else if (data.code !== null){
+            ElMessage.error(`获取trace下spanName列表失败, ${data.message}`)
+            return null
+        }
+    } catch (e) {
+        ElMessage.error(`获取trace下spanName列表失败, ${e.message}`)
+    }
+    return null
+}
 
 export const deleteAllSpansFromDB = async () => {
     try {

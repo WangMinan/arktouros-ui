@@ -106,9 +106,9 @@
             return
         }
         asideStore.$patch((state) => {
-            state.currentAside.active = '/main/trace'
+            state.currentAside.active = '/main/trace/dashboard'
         })
-        await router.push(`/main/trace?serviceName=${log.serviceName}&traceId=${log.traceId}`)
+        await router.push(`/main/trace/dashboard?serviceName=${log.serviceName}&traceId=${log.traceId}`)
     }
     
     const traceIdCascaderProps = reactive({
@@ -182,7 +182,7 @@
             if (data === null || data.result.length === 0) {
                 return
             }
-            ElMessage.success('删除所有链路数据成功')
+            ElMessage.success('删除所有日志数据成功')
         } finally {
             loading.close()
             logList.value.splice(0, logList.value.length)
