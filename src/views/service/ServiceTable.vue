@@ -113,11 +113,14 @@
         <!-- 面包屑 -->
         <el-row class="breadcrumb-header-row">
             <el-breadcrumb separator-icon="ArrowRight">
-                <el-breadcrumb-item>
-                    <a href="/main">主页</a>
+                <el-breadcrumb-item :to="{ path: '/main' }">
+                    主页
                 </el-breadcrumb-item>
                 <el-breadcrumb-item>
-                    <a href="/main/service">服务概览</a>
+                    服务
+                </el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/main/service/table' }">
+                    服务概览
                 </el-breadcrumb-item>
             </el-breadcrumb>
             <el-tooltip placement="bottom">

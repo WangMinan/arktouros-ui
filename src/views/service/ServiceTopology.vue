@@ -26,11 +26,14 @@
     <div class="topology-container">
         <el-row>
             <el-breadcrumb separator-icon="ArrowRight">
-                <el-breadcrumb-item>
-                    <a href="/main">主页</a>
+                <el-breadcrumb-item :to="{ path: '/main' }">
+                    主页
                 </el-breadcrumb-item>
                 <el-breadcrumb-item>
-                    <a href="/main/topology">服务拓扑</a>
+                    服务
+                </el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/service/topology' }">
+                    服务拓扑
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </el-row>

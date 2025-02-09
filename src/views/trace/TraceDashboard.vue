@@ -197,11 +197,14 @@
         <!-- 面包屑导航 -->
         <el-row class="breadcrumb-header-row">
             <el-breadcrumb separator-icon="ArrowRight">
-                <el-breadcrumb-item>
-                    <a href="/main">主页</a>
+                <el-breadcrumb-item :to="{ path: '/main' }">
+                    主页
                 </el-breadcrumb-item>
                 <el-breadcrumb-item>
-                    <a href="/main/trace">链路信息</a>
+                    链路
+                </el-breadcrumb-item>
+                <el-breadcrumb-item :to="{path: '/main/trace/dashboard'}">
+                    调用链路
                 </el-breadcrumb-item>
             </el-breadcrumb>
             <el-tooltip placement="bottom">

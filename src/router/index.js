@@ -1,4 +1,3 @@
-import { pa } from 'element-plus/es/locale/index.mjs'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
@@ -43,7 +42,7 @@ const routes = [
                         path: 'table',
                         name: 'table',
                         meta: {
-                            title: 'Arktouros|Table'
+                            title: 'Arktouros|Service|Table'
                         },
                         component: () => import("@/views/service/ServiceTable.vue")
                     },
@@ -51,7 +50,7 @@ const routes = [
                         path: 'topology',
                         name: 'topology',
                         meta: {
-                            title: 'Arktouros|Topology'
+                            title: 'Arktouros|Service|Topology'
                         },
                         component: () => import("@/views/service/ServiceTopology.vue")
                     }
@@ -71,24 +70,7 @@ const routes = [
                 meta: {
                     title: 'Arktouros|Metric'
                 },
-                children: [
-                    {
-                        path: 'dashboard',
-                        name: 'dashboard',
-                        meta: {
-                            title: 'Arktouros|DashBoard'
-                        },
-                        component: () => import("@/views/metric/MetricDashboard.vue")
-                    },
-                    {
-                        path: 'timeout',
-                        name: 'timeout',
-                        meta: {
-                            title: 'Arktouros|Timeout'
-                        },
-                        component: () => import("@/views/metric/MetricTimeout.vue")
-                    }
-                ]
+                component: () => import("@/views/metric/MetricDashboard.vue")
             },
             {
                 path: 'trace',
@@ -96,7 +78,25 @@ const routes = [
                 meta: {
                     title: 'Arktouros|Trace'
                 },
-                component: () => import("@/views/trace/TraceMain.vue")
+                children:
+                [
+                    {
+                        path: 'dashboard',
+                        name: 'traceDashboard',
+                        meta: {
+                            title: 'Arktouros|Trace|Dashboard'
+                        },
+                        component: () => import("@/views/trace/TraceDashboard.vue")
+                    },
+                    {
+                        path: "timeout",
+                        name: "traceTimeout",
+                        meta: {
+                            title: 'Arktouros|Trace|Timeout'
+                        },
+                        component: () => import("@/views/trace/TraceTimeout.vue")
+                    }
+                ]
             }
         ]
     },
