@@ -121,7 +121,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary"
-                                   @click="traceTimeoutDiagramRef.drawSpanTimoutHistogram()">
+                                   @click="traceTimeoutDiagramRef.getLineChart()">
                             统计
                         </el-button>
                     </el-form-item>
