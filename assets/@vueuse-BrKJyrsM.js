@@ -1,1 +1,235 @@
-import{u as U,b as J,n as _,r as L,e as x,w as I,g as z,f as X,h as Y,i as Z,t as ee,j as te,s as ne,k as E,l as re}from"./@vue-CnBZ4jx_.js";function G(e){return X()?(Y(e),!0):!1}function N(e){return typeof e=="function"?e():U(e)}const oe=typeof window<"u"&&typeof document<"u";typeof WorkerGlobalScope<"u"&&globalThis instanceof WorkerGlobalScope;const ae=Object.prototype.toString,ie=e=>ae.call(e)==="[object Object]",P=()=>{};function se(e,t){function n(...a){return new Promise((r,i)=>{Promise.resolve(e(()=>t.apply(this,a),{fn:t,thisArg:this,args:a})).then(r).catch(i)})}return n}const W=e=>e();function ue(e=W){const t=L(!0);function n(){t.value=!1}function a(){t.value=!0}const r=(...i)=>{t.value&&e(...i)};return{isActive:x(t),pause:n,resume:a,eventFilter:r}}function le(e){return z()}function ce(...e){if(e.length!==1)return ee(...e);const t=e[0];return typeof t=="function"?x(te(()=>({get:t,set:P}))):L(t)}function fe(e,t,n={}){const{eventFilter:a=W,...r}=n;return I(e,se(a,t),r)}function de(e,t,n={}){const{eventFilter:a,...r}=n,{eventFilter:i,pause:s,resume:u,isActive:l}=ue(a);return{stop:fe(e,t,{...r,eventFilter:i}),pause:s,resume:u,isActive:l}}function q(e,t=!0,n){le()?J(e,n):t?e():_(e)}function ve(e=!1,t={}){const{truthyValue:n=!0,falsyValue:a=!1}=t,r=Z(e),i=L(e);function s(u){if(arguments.length)return i.value=u,i.value;{const l=N(n);return i.value=i.value===l?N(a):l,i.value}}return r?s:[i,s]}function B(e){var t;const n=N(e);return(t=n==null?void 0:n.$el)!=null?t:n}const O=oe?window:void 0;function H(...e){let t,n,a,r;if(typeof e[0]=="string"||Array.isArray(e[0])?([n,a,r]=e,t=O):[t,n,a,r]=e,!t)return P;Array.isArray(n)||(n=[n]),Array.isArray(a)||(a=[a]);const i=[],s=()=>{i.forEach(v=>v()),i.length=0},u=(v,c,b,p)=>(v.addEventListener(c,b,p),()=>v.removeEventListener(c,b,p)),l=I(()=>[B(t),N(r)],([v,c])=>{if(s(),!v)return;const b=ie(c)?{...c}:c;i.push(...n.flatMap(p=>a.map(h=>u(v,p,h,b))))},{immediate:!0,flush:"post"}),m=()=>{l(),s()};return G(m),m}function ge(){const e=L(!1),t=z();return t&&J(()=>{e.value=!0},t),e}function pe(e){const t=ge();return E(()=>(t.value,!!e()))}function me(e,t={}){const{window:n=O}=t,a=pe(()=>n&&"matchMedia"in n&&typeof n.matchMedia=="function");let r;const i=L(!1),s=m=>{i.value=m.matches},u=()=>{r&&("removeEventListener"in r?r.removeEventListener("change",s):r.removeListener(s))},l=re(()=>{a.value&&(u(),r=n.matchMedia(N(e)),"addEventListener"in r?r.addEventListener("change",s):r.addListener(s),i.value=r.matches)});return G(()=>{l(),u(),r=void 0}),i}const F=typeof globalThis<"u"?globalThis:typeof window<"u"?window:typeof global<"u"?global:typeof self<"u"?self:{},V="__vueuse_ssr_handlers__",he=ye();function ye(){return V in F||(F[V]=F[V]||{}),F[V]}function K(e,t){return he[e]||t}function we(e){return e==null?"any":e instanceof Set?"set":e instanceof Map?"map":e instanceof Date?"date":typeof e=="boolean"?"boolean":typeof e=="string"?"string":typeof e=="object"?"object":Number.isNaN(e)?"any":"number"}const be={boolean:{read:e=>e==="true",write:e=>String(e)},object:{read:e=>JSON.parse(e),write:e=>JSON.stringify(e)},number:{read:e=>Number.parseFloat(e),write:e=>String(e)},any:{read:e=>e,write:e=>String(e)},string:{read:e=>e,write:e=>String(e)},map:{read:e=>new Map(JSON.parse(e)),write:e=>JSON.stringify(Array.from(e.entries()))},set:{read:e=>new Set(JSON.parse(e)),write:e=>JSON.stringify(Array.from(e))},date:{read:e=>new Date(e),write:e=>e.toISOString()}},R="vueuse-storage";function $(e,t,n,a={}){var r;const{flush:i="pre",deep:s=!0,listenToStorageChanges:u=!0,writeDefaults:l=!0,mergeDefaults:m=!1,shallow:v,window:c=O,eventFilter:b,onError:p=o=>{console.error(o)},initOnMounted:h}=a,g=(v?ne:L)(typeof t=="function"?t():t);if(!n)try{n=K("getDefaultStorage",()=>{var o;return(o=O)==null?void 0:o.localStorage})()}catch(o){p(o)}if(!n)return g;const w=N(t),j=we(w),S=(r=a.serializer)!=null?r:be[j],{pause:T,resume:d}=de(g,()=>M(g.value),{flush:i,deep:s,eventFilter:b});c&&u&&q(()=>{H(c,"storage",y),H(c,R,D),h&&y()}),h||y();function A(o,f){c&&c.dispatchEvent(new CustomEvent(R,{detail:{key:e,oldValue:o,newValue:f,storageArea:n}}))}function M(o){try{const f=n.getItem(e);if(o==null)A(f,null),n.removeItem(e);else{const k=S.write(o);f!==k&&(n.setItem(e,k),A(f,k))}}catch(f){p(f)}}function C(o){const f=o?o.newValue:n.getItem(e);if(f==null)return l&&w!=null&&n.setItem(e,S.write(w)),w;if(!o&&m){const k=S.read(f);return typeof m=="function"?m(k,w):j==="object"&&!Array.isArray(k)?{...w,...k}:k}else return typeof f!="string"?f:S.read(f)}function y(o){if(!(o&&o.storageArea!==n)){if(o&&o.key==null){g.value=w;return}if(!(o&&o.key!==e)){T();try{(o==null?void 0:o.newValue)!==S.write(g.value)&&(g.value=C(o))}catch(f){p(f)}finally{o?_(d):d()}}}}function D(o){y(o.detail)}return g}function Q(e){return me("(prefers-color-scheme: dark)",e)}function Se(e={}){const{selector:t="html",attribute:n="class",initialValue:a="auto",window:r=O,storage:i,storageKey:s="vueuse-color-scheme",listenToStorageChanges:u=!0,storageRef:l,emitAuto:m,disableTransition:v=!0}=e,c={auto:"",light:"light",dark:"dark",...e.modes||{}},b=Q({window:r}),p=E(()=>b.value?"dark":"light"),h=l||(s==null?ce(a):$(s,a,i,{window:r,listenToStorageChanges:u})),g=E(()=>h.value==="auto"?p.value:h.value),w=K("updateHTMLAttrs",(d,A,M)=>{const C=typeof d=="string"?r==null?void 0:r.document.querySelector(d):B(d);if(!C)return;let y;if(v&&(y=r.document.createElement("style"),y.appendChild(document.createTextNode("*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}")),r.document.head.appendChild(y)),A==="class"){const D=M.split(/\s/g);Object.values(c).flatMap(o=>(o||"").split(/\s/g)).filter(Boolean).forEach(o=>{D.includes(o)?C.classList.add(o):C.classList.remove(o)})}else C.setAttribute(A,M);v&&(r.getComputedStyle(y).opacity,document.head.removeChild(y))});function j(d){var A;w(t,n,(A=c[d])!=null?A:d)}function S(d){e.onChanged?e.onChanged(d,j):j(d)}I(g,S,{flush:"post",immediate:!0}),q(()=>S(g.value));const T=E({get(){return m?h.value:g.value},set(d){h.value=d}});try{return Object.assign(T,{store:h,system:p,state:g})}catch{return T}}function Ae(e={}){const{valueDark:t="dark",valueLight:n="",window:a=O}=e,r=Se({...e,onChanged:(s,u)=>{var l;e.onChanged?(l=e.onChanged)==null||l.call(e,s==="dark",u,s):u(s)},modes:{dark:t,light:n}}),i=E(()=>r.system?r.system.value:Q({window:a}).value?"dark":"light");return E({get(){return r.value==="dark"},set(s){const u=s?"dark":"light";i.value===u?r.value="auto":r.value=u}})}export{ve as a,$ as b,Ae as u};
+import { u as q, b as z, n as J, r as D, e as P, w as W, g as x, f as U, h as X, i as Y, t as Z, j as ee, s as te, k as E, l as ne } from "./@vue-CnBZ4jx_.js";
+function H(e) {
+  return U() ? (X(e), true) : false;
+}
+function O(e) {
+  return typeof e == "function" ? e() : q(e);
+}
+const re = typeof window < "u" && typeof document < "u";
+typeof WorkerGlobalScope < "u" && globalThis instanceof WorkerGlobalScope;
+const ae = Object.prototype.toString, oe = (e) => ae.call(e) === "[object Object]", B = () => {
+};
+function se(e, t) {
+  function n(...o) {
+    return new Promise((r, s) => {
+      Promise.resolve(e(() => t.apply(this, o), { fn: t, thisArg: this, args: o })).then(r).catch(s);
+    });
+  }
+  return n;
+}
+const G = (e) => e();
+function ie(e = G) {
+  const t = D(true);
+  function n() {
+    t.value = false;
+  }
+  function o() {
+    t.value = true;
+  }
+  const r = (...s) => {
+    t.value && e(...s);
+  };
+  return { isActive: P(t), pause: n, resume: o, eventFilter: r };
+}
+function ue(e) {
+  return x();
+}
+function le(...e) {
+  if (e.length !== 1) return Z(...e);
+  const t = e[0];
+  return typeof t == "function" ? P(ee(() => ({ get: t, set: B }))) : D(t);
+}
+function ce(e, t, n = {}) {
+  const { eventFilter: o = G, ...r } = n;
+  return W(e, se(o, t), r);
+}
+function fe(e, t, n = {}) {
+  const { eventFilter: o, ...r } = n, { eventFilter: s, pause: u, resume: i, isActive: l } = ie(o);
+  return { stop: ce(e, t, { ...r, eventFilter: s }), pause: u, resume: i, isActive: l };
+}
+function I(e, t = true, n) {
+  ue() ? z(e, n) : t ? e() : J(e);
+}
+function Ce(e = false, t = {}) {
+  const { truthyValue: n = true, falsyValue: o = false } = t, r = Y(e), s = D(e);
+  function u(i) {
+    if (arguments.length) return s.value = i, s.value;
+    {
+      const l = O(n);
+      return s.value = s.value === l ? O(o) : l, s.value;
+    }
+  }
+  return r ? u : [s, u];
+}
+function K(e) {
+  var t;
+  const n = O(e);
+  return (t = n == null ? void 0 : n.$el) != null ? t : n;
+}
+const M = re ? window : void 0;
+function R(...e) {
+  let t, n, o, r;
+  if (typeof e[0] == "string" || Array.isArray(e[0]) ? ([n, o, r] = e, t = M) : [t, n, o, r] = e, !t) return B;
+  Array.isArray(n) || (n = [n]), Array.isArray(o) || (o = [o]);
+  const s = [], u = () => {
+    s.forEach((h) => h()), s.length = 0;
+  }, i = (h, c, S, g) => (h.addEventListener(c, S, g), () => h.removeEventListener(c, S, g)), l = W(() => [K(t), O(r)], ([h, c]) => {
+    if (u(), !h) return;
+    const S = oe(c) ? { ...c } : c;
+    s.push(...n.flatMap((g) => o.map((v) => i(h, g, v, S))));
+  }, { immediate: true, flush: "post" }), p = () => {
+    l(), u();
+  };
+  return H(p), p;
+}
+function de() {
+  const e = D(false), t = x();
+  return t && z(() => {
+    e.value = true;
+  }, t), e;
+}
+function pe(e) {
+  const t = de();
+  return E(() => (t.value, !!e()));
+}
+function he(e, t = {}) {
+  const { window: n = M } = t, o = pe(() => n && "matchMedia" in n && typeof n.matchMedia == "function");
+  let r;
+  const s = D(false), u = (p) => {
+    s.value = p.matches;
+  }, i = () => {
+    r && ("removeEventListener" in r ? r.removeEventListener("change", u) : r.removeListener(u));
+  }, l = ne(() => {
+    o.value && (i(), r = n.matchMedia(O(e)), "addEventListener" in r ? r.addEventListener("change", u) : r.addListener(u), s.value = r.matches);
+  });
+  return H(() => {
+    l(), i(), r = void 0;
+  }), s;
+}
+const j = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {}, F = "__vueuse_ssr_handlers__", me = ge();
+function ge() {
+  return F in j || (j[F] = j[F] || {}), j[F];
+}
+function Q(e, t) {
+  return me[e] || t;
+}
+function ve(e) {
+  return e == null ? "any" : e instanceof Set ? "set" : e instanceof Map ? "map" : e instanceof Date ? "date" : typeof e == "boolean" ? "boolean" : typeof e == "string" ? "string" : typeof e == "object" ? "object" : Number.isNaN(e) ? "any" : "number";
+}
+const ye = { boolean: { read: (e) => e === "true", write: (e) => String(e) }, object: { read: (e) => JSON.parse(e), write: (e) => JSON.stringify(e) }, number: { read: (e) => Number.parseFloat(e), write: (e) => String(e) }, any: { read: (e) => e, write: (e) => String(e) }, string: { read: (e) => e, write: (e) => String(e) }, map: { read: (e) => new Map(JSON.parse(e)), write: (e) => JSON.stringify(Array.from(e.entries())) }, set: { read: (e) => new Set(JSON.parse(e)), write: (e) => JSON.stringify(Array.from(e)) }, date: { read: (e) => new Date(e), write: (e) => e.toISOString() } }, V = "vueuse-storage";
+function we(e, t, n, o = {}) {
+  var r;
+  const { flush: s = "pre", deep: u = true, listenToStorageChanges: i = true, writeDefaults: l = true, mergeDefaults: p = false, shallow: h, window: c = M, eventFilter: S, onError: g = (a) => {
+    console.error(a);
+  }, initOnMounted: v } = o, m = (h ? te : D)(typeof t == "function" ? t() : t);
+  if (!n) try {
+    n = Q("getDefaultStorage", () => {
+      var a;
+      return (a = M) == null ? void 0 : a.localStorage;
+    })();
+  } catch (a) {
+    g(a);
+  }
+  if (!n) return m;
+  const w = O(t), L = ve(w), b = (r = o.serializer) != null ? r : ye[L], { pause: T, resume: f } = fe(m, () => _(m.value), { flush: s, deep: u, eventFilter: S });
+  c && i && I(() => {
+    R(c, "storage", y), R(c, V, N), v && y();
+  }), v || y();
+  function C(a, d) {
+    c && c.dispatchEvent(new CustomEvent(V, { detail: { key: e, oldValue: a, newValue: d, storageArea: n } }));
+  }
+  function _(a) {
+    try {
+      const d = n.getItem(e);
+      if (a == null) C(d, null), n.removeItem(e);
+      else {
+        const A = b.write(a);
+        d !== A && (n.setItem(e, A), C(d, A));
+      }
+    } catch (d) {
+      g(d);
+    }
+  }
+  function k(a) {
+    const d = a ? a.newValue : n.getItem(e);
+    if (d == null) return l && w != null && n.setItem(e, b.write(w)), w;
+    if (!a && p) {
+      const A = b.read(d);
+      return typeof p == "function" ? p(A, w) : L === "object" && !Array.isArray(A) ? { ...w, ...A } : A;
+    } else return typeof d != "string" ? d : b.read(d);
+  }
+  function y(a) {
+    if (!(a && a.storageArea !== n)) {
+      if (a && a.key == null) {
+        m.value = w;
+        return;
+      }
+      if (!(a && a.key !== e)) {
+        T();
+        try {
+          (a == null ? void 0 : a.newValue) !== b.write(m.value) && (m.value = k(a));
+        } catch (d) {
+          g(d);
+        } finally {
+          a ? J(f) : f();
+        }
+      }
+    }
+  }
+  function N(a) {
+    y(a.detail);
+  }
+  return m;
+}
+function $(e) {
+  return he("(prefers-color-scheme: dark)", e);
+}
+function Se(e = {}) {
+  const { selector: t = "html", attribute: n = "class", initialValue: o = "auto", window: r = M, storage: s, storageKey: u = "vueuse-color-scheme", listenToStorageChanges: i = true, storageRef: l, emitAuto: p, disableTransition: h = true } = e, c = { auto: "", light: "light", dark: "dark", ...e.modes || {} }, S = $({ window: r }), g = E(() => S.value ? "dark" : "light"), v = l || (u == null ? le(o) : we(u, o, s, { window: r, listenToStorageChanges: i })), m = E(() => v.value === "auto" ? g.value : v.value), w = Q("updateHTMLAttrs", (f, C, _) => {
+    const k = typeof f == "string" ? r == null ? void 0 : r.document.querySelector(f) : K(f);
+    if (!k) return;
+    let y;
+    if (h && (y = r.document.createElement("style"), y.appendChild(document.createTextNode("*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}")), r.document.head.appendChild(y)), C === "class") {
+      const N = _.split(/\s/g);
+      Object.values(c).flatMap((a) => (a || "").split(/\s/g)).filter(Boolean).forEach((a) => {
+        N.includes(a) ? k.classList.add(a) : k.classList.remove(a);
+      });
+    } else k.setAttribute(C, _);
+    h && (r.getComputedStyle(y).opacity, document.head.removeChild(y));
+  });
+  function L(f) {
+    var C;
+    w(t, n, (C = c[f]) != null ? C : f);
+  }
+  function b(f) {
+    e.onChanged ? e.onChanged(f, L) : L(f);
+  }
+  W(m, b, { flush: "post", immediate: true }), I(() => b(m.value));
+  const T = E({ get() {
+    return p ? v.value : m.value;
+  }, set(f) {
+    v.value = f;
+  } });
+  try {
+    return Object.assign(T, { store: v, system: g, state: m });
+  } catch {
+    return T;
+  }
+}
+function Ae(e = {}) {
+  const { valueDark: t = "dark", valueLight: n = "", window: o = M } = e, r = Se({ ...e, onChanged: (i, l) => {
+    var p;
+    e.onChanged ? (p = e.onChanged) == null || p.call(e, i === "dark", l, i) : l(i);
+  }, modes: { dark: t, light: n } }), s = E(() => r.system ? r.system.value : $({ window: o }).value ? "dark" : "light");
+  return E({ get() {
+    return r.value === "dark";
+  }, set(i) {
+    const l = i ? "dark" : "light";
+    s.value === l ? r.value = "auto" : r.value = l;
+  } });
+}
+export {
+  Ce as a,
+  we as b,
+  Ae as u
+};

@@ -1,1 +1,43 @@
-const n=/"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/,i=/"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/,o=/^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;function f(t,e){if(t==="__proto__"||t==="constructor"&&e&&typeof e=="object"&&"prototype"in e){s(t);return}return e}function s(t){console.warn(`[destr] Dropping "${t}" key to prevent prototype pollution.`)}function c(t,e={}){if(typeof t!="string")return t;const u=t.trim();if(t[0]==='"'&&t.endsWith('"')&&!t.includes("\\"))return u.slice(1,-1);if(u.length<=9){const r=u.toLowerCase();if(r==="true")return!0;if(r==="false")return!1;if(r==="undefined")return;if(r==="null")return null;if(r==="nan")return Number.NaN;if(r==="infinity")return Number.POSITIVE_INFINITY;if(r==="-infinity")return Number.NEGATIVE_INFINITY}if(!o.test(t)){if(e.strict)throw new SyntaxError("[destr] Invalid JSON");return t}try{if(n.test(t)||i.test(t)){if(e.strict)throw new Error("[destr] Possible prototype pollution");return JSON.parse(t,f)}return JSON.parse(t)}catch(r){if(e.strict)throw r;return t}}export{c as d};
+const e = /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/, s = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/, i = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
+function u(r, n) {
+  if (r === "__proto__" || r === "constructor" && n && typeof n == "object" && "prototype" in n) {
+    f(r);
+    return;
+  }
+  return n;
+}
+function f(r) {
+  console.warn(`[destr] Dropping "${r}" key to prevent prototype pollution.`);
+}
+function c(r, n = {}) {
+  if (typeof r != "string") return r;
+  const o = r.trim();
+  if (r[0] === '"' && r.endsWith('"') && !r.includes("\\")) return o.slice(1, -1);
+  if (o.length <= 9) {
+    const t = o.toLowerCase();
+    if (t === "true") return true;
+    if (t === "false") return false;
+    if (t === "undefined") return;
+    if (t === "null") return null;
+    if (t === "nan") return Number.NaN;
+    if (t === "infinity") return Number.POSITIVE_INFINITY;
+    if (t === "-infinity") return Number.NEGATIVE_INFINITY;
+  }
+  if (!i.test(r)) {
+    if (n.strict) throw new SyntaxError("[destr] Invalid JSON");
+    return r;
+  }
+  try {
+    if (e.test(r) || s.test(r)) {
+      if (n.strict) throw new Error("[destr] Possible prototype pollution");
+      return JSON.parse(r, u);
+    }
+    return JSON.parse(r);
+  } catch (t) {
+    if (n.strict) throw t;
+    return r;
+  }
+}
+export {
+  c as d
+};
