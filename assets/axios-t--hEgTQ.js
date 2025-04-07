@@ -574,7 +574,7 @@ function cn(e, t) {
 }
 function Me(e, t, n) {
   let r = !an(t);
-  return e && r || n == false ? cn(e, t) : t;
+  return e && (r || n == false) ? cn(e, t) : t;
 }
 const Ee = (e) => e instanceof A ? { ...e } : e;
 function B(e, t) {
@@ -609,7 +609,7 @@ function B(e, t) {
 const ze = (e) => {
   const t = B({}, e);
   let { data: n, withXSRFToken: r, xsrfHeaderName: s, xsrfCookieName: o, headers: i, auth: c } = t;
-  t.headers = i = A.from(i), t.url = ke(Me(t.baseURL, t.url), e.params, e.paramsSerializer), c && i.set("Authorization", "Basic " + btoa((c.username || "") + ":" + (c.password ? unescape(encodeURIComponent(c.password)) : "")));
+  t.headers = i = A.from(i), t.url = ke(Me(t.baseURL, t.url, t.allowAbsoluteUrls), e.params, e.paramsSerializer), c && i.set("Authorization", "Basic " + btoa((c.username || "") + ":" + (c.password ? unescape(encodeURIComponent(c.password)) : "")));
   let f;
   if (a.isFormData(n)) {
     if (O.hasStandardBrowserEnv || O.hasStandardBrowserWebWorkerEnv) i.setContentType(void 0);
@@ -846,7 +846,7 @@ function Oe(e) {
     return He(r) || (te(e), r && r.response && (r.response.data = ee.call(e, e.transformResponse, r.response), r.response.headers = A.from(r.response.headers))), Promise.reject(r);
   });
 }
-const We = "1.8.2", Z = {};
+const We = "1.8.4", Z = {};
 ["object", "boolean", "number", "function", "string", "symbol"].forEach((e, t) => {
   Z[e] = function(r) {
     return typeof r === e || "a" + (t < 1 ? "n " : " ") + e;
