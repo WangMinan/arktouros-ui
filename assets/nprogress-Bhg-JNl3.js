@@ -1,4 +1,4 @@
-import { g as T, h as w } from "./dayjs-B_aAqRSu.js";
+import { c as T, g as w } from "./clipboard-BFgOkOlC.js";
 var C = { exports: {} };
 /* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
 * @license MIT */

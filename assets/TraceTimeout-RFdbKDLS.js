@@ -1,16 +1,16 @@
-import { a as A, g as L } from "./index-zlTQOoWn.js";
-import { b as V, c as z } from "./index-C5wDZic-.js";
+import { a as A, g as L } from "./index-C_VSxqW3.js";
+import { b as V, c as z } from "./index-pN7cXgMP.js";
 import { b as D } from "./@vueuse-BrKJyrsM.js";
 import { i as R } from "./echarts-DuzIGl-8.js";
 import { t as E } from "./dateUtil-NlCD2qvi.js";
 import { u as B } from "./index-DQDgIJ2e.js";
 import { u as O } from "./vue-router-DZ3MrWk1.js";
-import { _ as k } from "./index-Bhs3FTqI.js";
-import { a as F } from "./element-plus-BzJ0EF8k.js";
-import { ad as U, w as M, b as q, W as G, c as N, o as x, r as S, X as H, Q as o, I as s, ag as p, M as T, a as $ } from "./@vue-CnBZ4jx_.js";
+import { _ as k } from "./index-Ddllqwnv.js";
+import { a as F } from "./element-plus-hbUA32rR.js";
+import { ad as U, w as M, b as q, W as G, c as N, o as x, r as S, X as H, Q as o, I as s, ag as d, M as T, a as $ } from "./@vue-CnBZ4jx_.js";
 import "./axios-t--hEgTQ.js";
-import "./nprogress-Dx41icWA.js";
-import "./dayjs-B_aAqRSu.js";
+import "./nprogress-Bhg-JNl3.js";
+import "./clipboard-BFgOkOlC.js";
 import "./arktourosUiConfigUtil-0zbcKwuZ.js";
 import "./tslib-BDyQ-Jie.js";
 import "./zrender-Cg4aFrUj.js";
@@ -22,6 +22,7 @@ import "./deep-pick-omit-CegYQlcN.js";
 import "./lodash-es-C-xrcuFl.js";
 import "./@popperjs-DB1lLFnh.js";
 import "./@ctrl-r5W6hzzQ.js";
+import "./dayjs-dlSZ-o3N.js";
 import "./async-validator-CRx4dHSJ.js";
 import "./memoize-one-BdPwpGay.js";
 import "./normalize-wheel-es-BQoi3Ox2.js";
@@ -66,14 +67,14 @@ const J = { id: "trace-timeout-histogram-div" }, Q = { __name: "TraceTimeoutDiag
     }), await v.push(`/main/trace/dashboard?serviceName=${l.serviceName}&traceId=${l.traceId}`);
   }, f = (l) => {
     m && m.dispose();
-    let e = { backgroundColor: d.value === "dark" ? "#212224" : "#fff", tooltip: { trigger: "axis", triggerOn: "mousemove", backgroundColor: d.value === "dark" ? "#212224" : "#fff", textStyle: { color: d.value === "dark" ? "#fff" : "#212224" }, confine: true, formatter: function(r) {
+    let e = { backgroundColor: p.value === "dark" ? "#212224" : "#fff", tooltip: { trigger: "axis", triggerOn: "mousemove", backgroundColor: p.value === "dark" ? "#212224" : "#fff", textStyle: { color: p.value === "dark" ? "#fff" : "#212224" }, confine: true, formatter: function(r) {
       return n(r);
     } }, xAxis: { name: "\u65F6\u95F4", type: "category", boundaryGap: false, data: l.xaxis }, yAxis: { name: "\u8017\u65F6(ms)", type: "value" }, series: { name: "\u8017\u65F6", type: "line", smooth: true, data: l.spanTimesValues } };
     m = R(document.getElementById("trace-timeout-histogram-div")), m.setOption(e), m.on("click", async function(r) {
       await a(r.data.span);
     });
-  }, d = D("theme-appearance", "auto");
-  M(d, () => {
+  }, p = D("theme-appearance", "auto");
+  M(p, () => {
     u();
   }), c({ getLineChart: u });
   let _;
@@ -106,17 +107,17 @@ const J = { id: "trace-timeout-histogram-div" }, Q = { __name: "TraceTimeoutDiag
       c.value != null && c.value.length === 2 && (n = Date.parse(c.value[0]), a = Date.parse(c.value[1]));
       const f = await z(v.value, n, a);
       if (f === null) return;
-      f.result.map((d) => ({ leaf: true, value: d, label: d })).forEach((d) => {
-        i.push(d);
+      f.result.map((p) => ({ leaf: true, value: p, label: p })).forEach((p) => {
+        i.push(p);
       });
     }
     t(i);
   } }), b = S();
   return (v, t) => {
-    const i = p("el-breadcrumb-item"), u = p("el-breadcrumb"), n = p("el-row"), a = p("el-date-picker"), f = p("el-form-item"), d = p("el-cascader"), _ = p("el-button"), g = p("el-form"), l = p("el-divider"), e = p("el-card");
-    return x(), N("div", X, [o(n, { class: "breadcrumb-header-row" }, { default: s(() => [o(u, { "separator-icon": "ArrowRight" }, { default: s(() => [o(i, { to: { path: "/main" } }, { default: s(() => t[3] || (t[3] = [T(" \u4E3B\u9875 ")])), _: 1 }), o(i, null, { default: s(() => t[4] || (t[4] = [T(" \u94FE\u8DEF ")])), _: 1 }), o(i, { to: { path: "/main/trace/dashboard" } }, { default: s(() => t[5] || (t[5] = [T(" \u8D85\u65F6\u7EDF\u8BA1 ")])), _: 1 })]), _: 1 })]), _: 1 }), o(e, { class: "table-card" }, { default: s(() => [o(n, { class: "cascader-div" }, { default: s(() => [o(g, { inline: true }, { default: s(() => [o(f, { style: { width: "40%" }, label: "\u8D77\u6B62\u65F6\u95F4" }, { default: s(() => [o(a, { modelValue: c.value, "onUpdate:modelValue": t[0] || (t[0] = (r) => c.value = r), type: "datetimerange", "range-separator": "\u5230", "start-placeholder": "\u5F00\u59CB\u65F6\u95F4", "end-placeholder": "\u7ED3\u675F\u65F6\u95F4" }, null, 8, ["modelValue"])]), _: 1 }), o(f, { style: { width: "40%" }, label: "Span\u540D\u79F0", prop: "spanName" }, { default: s(() => [o(d, { style: { width: "100%" }, placeholder: "\u8BF7\u9009\u62E9\u5BF9\u5E94Span\u540D\u79F0", modelValue: m.value, "onUpdate:modelValue": t[1] || (t[1] = (r) => m.value = r), clearable: "", props: y, "show-all-levels": false }, null, 8, ["modelValue", "props"])]), _: 1 }), o(f, null, { default: s(() => [o(_, { type: "primary", onClick: t[2] || (t[2] = (r) => b.value.getLineChart()) }, { default: s(() => t[6] || (t[6] = [T(" \u7EDF\u8BA1 ")])), _: 1 })]), _: 1 })]), _: 1 })]), _: 1 }), o(l), $("div", j, [t[7] || (t[7] = $("div", null, "\u8C03\u7528\u8D85\u65F6\u7EDF\u8BA1", -1)), o(W, { ref_key: "traceTimeoutDiagramRef", ref: b, spanNameCascade: m.value, startAndStopTime: c.value }, null, 8, ["spanNameCascade", "startAndStopTime"])])]), _: 1 })]);
+    const i = d("el-breadcrumb-item"), u = d("el-breadcrumb"), n = d("el-row"), a = d("el-date-picker"), f = d("el-form-item"), p = d("el-cascader"), _ = d("el-button"), g = d("el-form"), l = d("el-divider"), e = d("el-card");
+    return x(), N("div", X, [o(n, { class: "breadcrumb-header-row" }, { default: s(() => [o(u, { "separator-icon": "ArrowRight" }, { default: s(() => [o(i, { to: { path: "/main" } }, { default: s(() => t[3] || (t[3] = [T(" \u4E3B\u9875 ")])), _: 1 }), o(i, null, { default: s(() => t[4] || (t[4] = [T(" \u94FE\u8DEF ")])), _: 1 }), o(i, { to: { path: "/main/trace/dashboard" } }, { default: s(() => t[5] || (t[5] = [T(" \u8D85\u65F6\u7EDF\u8BA1 ")])), _: 1 })]), _: 1 })]), _: 1 }), o(e, { class: "table-card" }, { default: s(() => [o(n, { class: "cascader-div" }, { default: s(() => [o(g, { inline: true }, { default: s(() => [o(f, { style: { width: "40%" }, label: "\u8D77\u6B62\u65F6\u95F4" }, { default: s(() => [o(a, { modelValue: c.value, "onUpdate:modelValue": t[0] || (t[0] = (r) => c.value = r), type: "datetimerange", "range-separator": "\u5230", "start-placeholder": "\u5F00\u59CB\u65F6\u95F4", "end-placeholder": "\u7ED3\u675F\u65F6\u95F4" }, null, 8, ["modelValue"])]), _: 1 }), o(f, { style: { width: "40%" }, label: "Span\u540D\u79F0", prop: "spanName" }, { default: s(() => [o(p, { style: { width: "100%" }, placeholder: "\u8BF7\u9009\u62E9\u5BF9\u5E94Span\u540D\u79F0", modelValue: m.value, "onUpdate:modelValue": t[1] || (t[1] = (r) => m.value = r), clearable: "", props: y, "show-all-levels": false }, null, 8, ["modelValue", "props"])]), _: 1 }), o(f, null, { default: s(() => [o(_, { type: "primary", onClick: t[2] || (t[2] = (r) => b.value.getLineChart()) }, { default: s(() => t[6] || (t[6] = [T(" \u7EDF\u8BA1 ")])), _: 1 })]), _: 1 })]), _: 1 })]), _: 1 }), o(l), $("div", j, [t[7] || (t[7] = $("div", null, "\u8C03\u7528\u8D85\u65F6\u7EDF\u8BA1", -1)), o(W, { ref_key: "traceTimeoutDiagramRef", ref: b, spanNameCascade: m.value, startAndStopTime: c.value }, null, 8, ["spanNameCascade", "startAndStopTime"])])]), _: 1 })]);
   };
-} }, ke = k(K, [["__scopeId", "data-v-69b06649"]]);
+} }, Ne = k(K, [["__scopeId", "data-v-69b06649"]]);
 export {
-  ke as default
+  Ne as default
 };
