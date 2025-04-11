@@ -7,6 +7,8 @@
     import { timestampToJsTimeStr } from "@/utils/dateUtil.js";
     import { useAsideStore } from "@/store/aside/index.js";
     
+    import useClipboard from 'vue-clipboard3';
+    
     const asideStore = useAsideStore()
     
     const router = useRouter()
@@ -189,6 +191,19 @@
             router.go(0)
         }
     }
+    
+    const { toClipboard } = useClipboard()
+    
+    const copyLogsToClipBoard = async () => {
+        try {
+            // 只能是纯文本 不可以是对象
+            await toClipboard(JSON.stringify(logList.value))
+            // 复制成功
+        } catch (e) {
+            // 复制失败
+            console.error(e)
+        }
+    }
 </script>
 
 <template>
@@ -259,7 +274,10 @@
                                   placeholder="请输入内容不包含的关键词" clearable/>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="toggleLogList">搜索</el-button>
+                        <el-button type="primary" @click="toggleLogList" icon="Search">搜索</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="copyLogsToClipBoard" icon="CopyDocument">复制搜索结果</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -303,7 +321,7 @@
                 <el-pagination
                     v-model:current-page="logQueryDto.pageNum"
                     v-model:page-size="logQueryDto.pageSize"
-                    :page-sizes="[2, 5, 10, 20]"
+                    :page-sizes="[10, 20, 50, 100]"
                     layout="total, prev, pager, next, sizes"
                     :total="total"
                     @size-change="handleSizeChange"

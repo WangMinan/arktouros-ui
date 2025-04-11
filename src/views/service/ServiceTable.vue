@@ -206,7 +206,7 @@
                 <el-pagination
                     v-model:current-page="baseQueryDto.pageNum"
                     v-model:page-size="baseQueryDto.pageSize"
-                    :page-sizes="[2, 5, 10, 20]"
+                    :page-sizes="[10, 20, 50, 100]"
                     layout="total, prev, pager, next, sizes"
                     :total="total"
                     @size-change="handleSizeChange"

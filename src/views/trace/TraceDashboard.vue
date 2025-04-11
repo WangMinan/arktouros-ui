@@ -278,7 +278,7 @@
                             <el-pagination
                                 v-model:current-page="endpointsQueryDto.pageNum"
                                 v-model:page-size="endpointsQueryDto.pageSize"
-                                :page-sizes="[2, 5, 10, 20]"
+                                :page-sizes="[10, 20, 50, 100]"
                                 layout="total, pager, sizes"
                                 :total="total"
                                 :pager-count="5"
