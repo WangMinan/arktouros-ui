@@ -70,3 +70,18 @@ export const getServiceTopology = async (namespace) => {
     }
     return null
 }
+
+export const getServiceTimeRange = async () => {
+    try {
+        const {data} = await axios.get('/service/time-range', {})
+        if (data.code !== null && data.code === 2000) {
+            return data
+        } else if (data.code !== null){
+            ElMessage.error(`获取服务时间范围失败, ${data.message}`)
+            return null
+        }
+    } catch (e) {
+        ElMessage.error(`获取服务时间范围失败, ${e.message}`)
+    }
+    return null
+}

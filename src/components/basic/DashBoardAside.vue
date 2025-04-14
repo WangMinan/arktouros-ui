@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, ref } from "vue";
+    import { onMounted, ref, watch } from "vue";
     import { useAsideStore } from "@/store/aside/index.js";
     import { storeToRefs } from "pinia";
     
@@ -30,6 +30,11 @@
             state.currentAside.active = key
         })
     }
+    
+    watch(currentAside, (newVal) => {
+        defaultActive.value = newVal.active
+        isCollapse.value = newVal.isCollapse
+    }, { deep: true })
 </script>
 
 <template>

@@ -91,7 +91,7 @@
                         <li>所属服务: ${span.serviceName}</li>
                         <li>开始时间: ${startTime}</li>
                         <li>结束时间: ${endTime}</li>
-                        <li>span状态: ${status}</li>
+                        <li>Span状态: ${status}</li>
                         <li>父节点SpanId: ${span.parentSpanId}</li>
                         <li>所属endPoint: ${span.localEndPoint.serviceName}</li>
                         <li>所属endPoint ip与端口: ${localIp}:${span.localEndPoint.port}</li>
