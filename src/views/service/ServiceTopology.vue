@@ -1,7 +1,7 @@
 <script setup>
     import { ref } from "vue";
     import { getNamespaceList } from "@/api/service/index.js";
-    import ServiceTopologyDiagram from "@/components/screen/ServiceTopologyDiagram.vue";
+    import ServiceTopologyAll from "@/components/screen/ServiceTopologyAll.vue";
     
     const namespace = ref('')
     
@@ -19,7 +19,7 @@
         cb(results)
     }
     
-    const serviceTopologyRef = ref()
+    const serviceTopologyAllRef = ref()
 </script>
 
 <template>
@@ -44,7 +44,7 @@
                 :fetch-suggestions="querySearch"
                 clearable
                 placeholder="请选择命名空间--默认为default"
-                @select="serviceTopologyRef.getTopology()"
+                @select="serviceTopologyAllRef.getTopology()"
                 style="width: 40%"
             >
                 <template #prepend>
@@ -54,8 +54,7 @@
                 </template>
             </el-autocomplete>
         </div>
-        <service-topology-diagram
-            ref="serviceTopologyRef"
+        <service-topology-all
             :namespace="namespace"
             :symbolSize="50"
             :repulsion="200"
@@ -73,25 +72,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .card-container {
-            margin-top: 2%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            height: 85%;
-            
-            .el-card {
-                display: flex;
-                justify-content: center;
-                width: 90%;
-                
-                #service-topology-dom {
-                    width: 800px;
-                    height: 500px;
-                }
-            }
         }
     }
 </style>

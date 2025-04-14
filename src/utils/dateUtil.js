@@ -1,30 +1,40 @@
-function formatToTargetLengthDigits(str, length) {
-    // 如果字符串长度超过16位，则截断
-    if (str.length > length) {
-        return str.slice(0, length);
+/**
+ * 将毫秒级时间戳转换为格式化的时间字符串
+ * @param {string|number} timestamp 毫秒级时间戳
+ * @returns {string} 格式化的时间字符串
+ */
+export const timestampToJsTimeStr = (timestamp) => {
+    if (timestamp === '0') {
+        return 'unknown';
     }
 
-    // 如果字符串长度不足16位，则在后面补0
-    return str.padEnd(length, '0');
-}
-
-export const // 时间戳：1637244864707
-    /* 时间戳转换为时间 */
-    timestampToJsTimeStr = (timestamp) => {
-        if (timestamp === '0') {
-            return 'unknown'
-        }
-        // 历史遗留问题 将timestamp调节到13位 多删少补
-        timestamp = formatToTargetLengthDigits(timestamp, 13)
-
-        timestamp = Number(timestamp)
-
-        let date = new Date(timestamp);
-        let Y = date.getFullYear() + '-';
-        let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-        let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
-        let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-        let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
-        let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-        return Y + M + D + h + m + s;
+    // 确保时间戳是13位的数字
+    let normalizedTimestamp = String(timestamp);
+    if (normalizedTimestamp.length > 13) {
+        normalizedTimestamp = normalizedTimestamp.slice(0, 13);
+    } else if (normalizedTimestamp.length < 13) {
+        normalizedTimestamp = normalizedTimestamp.padEnd(13, '0');
     }
+
+    const date = new Date(Number(normalizedTimestamp));
+
+    // 使用内置的格式化方法
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+};
+
+/**
+ * 将Date对象转换为毫秒级时间戳
+ * @param {Date} date Date对象，不传则使用当前时间
+ * @returns {number} 毫秒级时间戳
+ */
+export const dateToTimestamp = (date = new Date()) => {
+    return date.getTime();
+};

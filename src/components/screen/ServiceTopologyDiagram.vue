@@ -179,30 +179,8 @@
 </script>
 
 <template>
-    <div class="card-container">
-        <el-card>
-            <div id="service-topology-dom"></div>
-        </el-card>
-    </div>
+    <div id="service-topology-dom"></div>
 </template>
 
 <style scoped lang="less">
-    .card-container {
-        margin-top: 2%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        height: 85%;
-        
-        .el-card {
-            display: flex;
-            justify-content: center;
-            width: 90%;
-            
-            #service-topology-dom {
-                width: 800px;
-                height: 500px;
-            }
-        }
-    }
 </style>
