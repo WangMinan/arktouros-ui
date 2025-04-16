@@ -50,7 +50,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        height: 85%;
+        height: 90%;
         
         .el-card {
             display: flex;
@@ -59,7 +59,7 @@
             
             #service-topology-dom {
                 width: 800px;
-                height: 500px;
+                height: 420px;
             }
         }
     }

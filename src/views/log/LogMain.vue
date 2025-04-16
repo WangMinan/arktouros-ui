@@ -288,10 +288,10 @@
                     :key="log"
                     style="word-break:break-all;">
                 <el-col :span="4">{{ log.serviceName }}</el-col>
-                <el-col :span="3">{{ timestampToJsTimeStr(log.timestamp) }}</el-col>
+                <el-col :span="4">{{ timestampToJsTimeStr(log.timestamp) }}</el-col>
                 <el-col :span="2">{{ log.severityText }}</el-col>
-                <el-col :span="12">{{ log.content }}</el-col>
-                <el-col :span="1">
+                <el-col :span="10">{{ log.content }}</el-col>
+                <el-col :span="2">
                     <el-tooltip effect="light"
                                 content="查看日志对应链路信息" placement="top"
                                 :enterable="false">

@@ -90,8 +90,8 @@
 
 <style scoped lang="less">
     .timeline-container {
-        margin-bottom: 0x;
-        padding: 10px;
+        margin-top: 5px;
+        padding: 6px 10px;
         border-radius: 4px;
         background-color: var(--el-bg-color);
         box-shadow: var(--el-box-shadow-lighter);
@@ -100,28 +100,48 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             
             .timeline-title {
                 font-weight: bold;
                 color: var(--el-text-color-primary);
+                font-size: 14px;
             }
             
             .timeline-current-time {
                 color: var(--el-color-primary);
-                font-size: 14px;
+                font-size: 13px;
             }
         }
         
         .timeline-slider {
-            padding: 5px 5px;
+            padding: 2px 5px;
+            margin: 0;
+            
+            :deep(.el-slider) {
+                margin: 0;
+                --el-slider-height: 6px;
+                
+                .el-slider__button {
+                    width: 12px;
+                    height: 12px;
+                }
+            }
         }
         
         .timeline-footer {
             display: flex;
             justify-content: space-between;
-            margin-top: 5px;
-            font-size: 12px;
+            margin-top: 2px;
+            font-size: 11px;
+            color: var(--el-text-color-secondary);
+        }
+        
+        .loading-text {
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            font-size: 13px;
             color: var(--el-text-color-secondary);
         }
     }
