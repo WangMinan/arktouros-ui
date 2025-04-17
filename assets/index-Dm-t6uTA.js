@@ -1,6 +1,6 @@
 import { a as c } from "./axios-t--hEgTQ.js";
 import { N as n } from "./nprogress-Bhg-JNl3.js";
-import { r as s } from "./index-B2_ngj1L.js";
+import { r as s } from "./index-D1hp6qJB.js";
 import { a as u } from "./arktourosUiConfigUtil-0zbcKwuZ.js";
 import { E as t } from "./element-plus-hbUA32rR.js";
 n.configure({ easing: "ease", speed: 1e3, showSpinner: false, trickleSpeed: 200, minimum: 0.3, parent: "body" });
