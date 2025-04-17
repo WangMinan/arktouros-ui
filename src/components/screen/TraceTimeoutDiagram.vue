@@ -54,7 +54,12 @@
     
     function formatSpan(params) {
         const span = params[0].data.span
-        const status = params.color === "#FFEE00" ? '异常' : '正常'
+        let status = '正常'
+        span.tags.forEach(tag => {
+            if (tag.key === 'long_duration' && tag.value === 'true') {
+                status = tag.key
+            }
+        })
         const startTime = timestampToJsTimeStr(span.startTime)
         const endTime = span.endTime === '-1' ? '该Span超时' : timestampToJsTimeStr(span.endTime)
         const localIp = span.localEndPoint.ip === '' ? 'null' : span.localEndPoint.ip
@@ -87,6 +92,16 @@
     }
     
     const drawLineChart = (result) => {
+        result.spanTimesValues.forEach((item) => {
+            // 根据span的状态来设置颜色
+            if (!item.itemStyle) item.itemStyle = {};
+            if (item.span.tags.some(tag => tag.key === 'long_duration' && tag.value === 'true')) {
+                item.itemStyle.color = '#FF2700'
+            }
+        })
+        
+        console.log(result)
+        
         if (spanTimeOutHistogram) {
             spanTimeOutHistogram.dispose();
         }
