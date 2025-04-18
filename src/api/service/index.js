@@ -46,15 +46,19 @@ export const getServiceList = async (baseQueryDto) => {
     return null
 }
 
-export const getServiceTopology = async (namespace) => {
+export const getServiceTopology = async (namespace, timestamp) => {
     try {
         // 如果namespace为空或者null则赋值default
         if (!namespace) {
             namespace = 'default'
         }
+        if (timestamp === null || timestamp === undefined) {
+            timestamp = Date.now()
+        }
         const {data} = await axios.get('/service/topology', {
             params: {
-                namespace: namespace
+                namespace: namespace,
+                timestamp: timestamp
             }
         })
         if (data.code !== null && data.code === 2000) {

@@ -204,8 +204,8 @@
             </div>
             <div class="pagination-div">
                 <el-pagination
-                    v-model:current-page="baseQueryDto.pageNum"
-                    v-model:page-size="baseQueryDto.pageSize"
+                    :current-page="baseQueryDto.pageNum"
+                    :page-size="baseQueryDto.pageSize"
                     :page-sizes="[10, 20, 50, 100]"
                     layout="total, prev, pager, next, sizes"
                     :total="total"

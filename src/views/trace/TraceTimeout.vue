@@ -100,7 +100,7 @@
             <!-- 级联选择框 -->
             <el-row class="cascader-div">
                 <el-form :inline="true">
-                    <el-form-item style="width: 40%" label="起止时间">
+                    <el-form-item style="width: 60%" label="起止时间">
                         <el-date-picker
                             v-model="startAndStopTime"
                             type="datetimerange"

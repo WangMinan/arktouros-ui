@@ -23,8 +23,7 @@
     const getLineChart = async () => {
         let loading = ElLoading.service({
             lock: true,
-            text: '正在读取数据',
-            spinner: 'el-icon-loading',
+            text: '正在计算用时数据，请等待。',
             background: 'rgba(0, 0, 0, 0.7)'
         });
         try {
@@ -99,9 +98,6 @@
                 item.itemStyle.color = '#FF2700'
             }
         })
-        
-        console.log(result)
-        
         if (spanTimeOutHistogram) {
             spanTimeOutHistogram.dispose();
         }

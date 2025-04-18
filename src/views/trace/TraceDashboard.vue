@@ -119,7 +119,7 @@
         if (data === null || data.result.length === 0) {
             return
         }
-        total.value = data.result.length
+        total.value = data.total
         endpointTraceIdArr.value.splice(0, endpointTraceIdArr.value.length)
         endpoints.splice(0, endpoints.length)
         data.result.forEach(item => {
@@ -129,6 +129,8 @@
             endpoints.push(endPointTraceId.endPoint)
         })
         traceIdList.value = endpointTraceIdArr.value[0].traceIds
+        
+        endpointsQueryDto.pageNum = tmpQueryDto.pageNum
     }
     
     let traceIdList = ref([])
@@ -275,13 +277,15 @@
                             </el-table>
                         </div>
                         <div class="pagination-div">
+                            <!-- 给分页组件一个key是为了让el-pagination重新渲染 否则可能出现页号始终为1的情况 -->
                             <el-pagination
-                                v-model:current-page="endpointsQueryDto.pageNum"
-                                v-model:page-size="endpointsQueryDto.pageSize"
+                                size="small"
+                                :key="endpointsQueryDto.pageNum"
+                                :current-page="endpointsQueryDto.pageNum"
+                                :page-size="endpointsQueryDto.pageSize"
                                 :page-sizes="[10, 20, 50, 100]"
                                 layout="total, pager, sizes"
                                 :total="total"
-                                :pager-count="5"
                                 @size-change="handleSizeChange"
                                 @current-change="handleCurrentChange"
                             />

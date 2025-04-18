@@ -3,6 +3,7 @@
     import { getServiceTopology } from "@/api/service/index.js";
     import * as echarts from 'echarts';
     import { useStorage } from '@vueuse/core'
+    import { ElLoading } from "element-plus";
     
     // 使用props从父组件向子组件传参
     const props = defineProps({
@@ -15,46 +16,52 @@
     const nodes = ref([])
     const calls = ref([])
     
-    const getTopology = async () => {
-        const data = await getServiceTopology(props.namespace);
-        const tmpNodes = data.result.nodes
-        // 整形成echarts需要的格式 {name: name, category: nodeName}
-        nodes.value = tmpNodes.map(item => {
-            if (item.nodeObject !== null) {
-                return {
-                    draggable: true,
-                    name: item.nodeObject.name,
-                    category: item.nodeObject.status ? 0 : 1,
-                    symbolSize: [props.symbolSize, props.symbolSize], // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
-                    item: item, // 传递给toolTip的附加信息
-                    itemStyle: {
-                        color: item.nodeObject.status ? "#6EF780": "#FF2700",
+    const getTopology = async (timestamp) => {
+        let loading = ElLoading.service({
+            lock: true,
+            text: '正在生成服务拓扑，请等待。',
+            background: 'rgba(0, 0, 0, 0.7)'
+        });
+        try {
+            const data = await getServiceTopology(props.namespace, timestamp);
+            const tmpNodes = data.result.nodes
+            // 整形成echarts需要的格式 {name: name, category: nodeName}
+            nodes.value = tmpNodes.map(item => {
+                if (item.nodeObject !== null) {
+                    return {
+                        draggable: true,
+                        name: item.nodeObject.name,
+                        category: item.nodeObject.status ? 0 : 1,
+                        symbolSize: [props.symbolSize, props.symbolSize], // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
+                        item: item, // 传递给toolTip的附加信息
+                        itemStyle: {
+                            color: item.nodeObject.status ? "#C7EDCC": "#FF2700",
+                            // 如果正常就用浅绿色 否则用黄色
+                            borderColor: item.nodeObject.status ? "#6EF780": "#FFEE00",
+                        }
                     }
                 }
-            }
-            return null
-        })
-        const tmpCalls = data.result.calls
-        calls.value = tmpCalls.map(call => {
-            if (call.source === null || call.target === null) {
                 return null
-            }
-            return {
-                source: call.source.nodeObject.name,
-                target: call.target.nodeObject.name
-            }
-        })
+            })
+            const tmpCalls = data.result.calls
+            calls.value = tmpCalls.map(call => {
+                if (call.source === null || call.target === null) {
+                    return null
+                }
+                return {
+                    source: call.source.nodeObject.name,
+                    target: call.target.nodeObject.name
+                }
+            })
+        } finally {
+            loading.close()
+        }
     }
-    
-    defineExpose({
-        getTopology
-    })
     
     let resizeObserver;
     
     onMounted(async () => {
-        await getTopology()
-        drawServiceTopology()
+        await drawServiceTopology()
         window.addEventListener('resize', handleResize);
         resizeObserver = new ResizeObserver(() => handleResize);
         resizeObserver.observe(document.getElementById('service-topology-dom'));
@@ -89,7 +96,8 @@
                 </div>`;
     }
     
-    const drawServiceTopology = () => {
+    const drawServiceTopology = async (timestamp) => {
+        await getTopology(timestamp)
         if (serviceTopologyChart) {
             serviceTopologyChart.dispose(); //销毁
         }
@@ -146,7 +154,7 @@
                         {
                             name: '服务在线',
                             itemStyle: {
-                                color: "#6EF780"
+                                color: "#C7EDCC"
                             }
                         },
                         {
@@ -173,8 +181,12 @@
     };
     
     // 使用自定义监听器来重新绘制图表
-    watch(checkIsDark, () => {
-        drawServiceTopology()
+    watch(checkIsDark, async () => {
+        await drawServiceTopology()
+    })
+    
+    defineExpose({
+        drawServiceTopology
     })
 </script>
 

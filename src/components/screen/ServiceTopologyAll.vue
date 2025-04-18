@@ -21,9 +21,8 @@
     })
     
     const updateTopology = async (timestamp) => {
-        console.log(timestamp)
         // 这里可以传递timestamp到getTopology方法
-        await serviceTopologyDiagramRef.value.getTopology();
+        await serviceTopologyDiagramRef.value.drawServiceTopology(timestamp);
     }
 </script>
 

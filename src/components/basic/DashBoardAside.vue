@@ -91,11 +91,11 @@
                         <span v-if="!isCollapse">链路</span>
                     </div>
                 </template>
-                <el-menu-item index="/main/trace/dashboard">
-                    <span>调用链路</span>
-                </el-menu-item>
                 <el-menu-item index="/main/trace/timeout">
                     <span>超时统计</span>
+                </el-menu-item>
+                <el-menu-item index="/main/trace/dashboard">
+                    <span>调用链路</span>
                 </el-menu-item>
             </el-sub-menu>
             <el-menu-item index="/main/metric">
