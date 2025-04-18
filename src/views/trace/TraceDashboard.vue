@@ -258,7 +258,7 @@
                                 <el-table-column prop="serviceName" label="服务名称"/>
                                 <el-table-column prop="ip" label="IP地址"/>
                                 <el-table-column prop="port" label="端口号"/>
-                                <el-table-column prop="latency" label="时延"/>
+                                <el-table-column prop="latency" label="时延(ms)"/>
                                 <el-table-column fixed="right" label="绘图">
                                     <template #default="scope">
                                         <el-tooltip effect="light"

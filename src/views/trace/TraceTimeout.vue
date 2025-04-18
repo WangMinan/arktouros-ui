@@ -132,6 +132,7 @@
                             range-separator="到"
                             start-placeholder="开始时间"
                             end-placeholder="结束时间"
+                            clearable
                         />
                     </el-form-item>
                     <el-form-item style="width: 40%" label="Span名称" prop="spanName">

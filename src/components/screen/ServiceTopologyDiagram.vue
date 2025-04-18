@@ -86,7 +86,6 @@
         const status = service.status ? '正常' : '超时异常或离线'
         const tagsStr = service.tags.length === 0 ? '[]' : JSON.stringify(service.tags)
         
-        
         return `<div>
                     <div>
                         <b>当前Service详细情况</b>
@@ -95,7 +94,6 @@
                         <li>id: ${service.id}</li>
                         <li>名称: ${service.name}</li>
                         <li>命名空间: ${service.namespace}</li>
-                        <li>延迟: ${service.latency} ms</li>
                         <li>状态: ${status}</li>
                         <li>标签: ${tagsStr}</li>
                     </ul>
