@@ -19,14 +19,29 @@
     const stepValue = ref(60000); // 默认步长为1分钟(毫秒)
     // 修改步长选项，限制在1ms到5分钟之间
     const stepOptions = [
-        { label: '1毫秒', value: 1 },
-        { label: '100毫秒', value: 100 },
-        { label: '1秒', value: 1000 },
-        { label: '10秒', value: 10000 },
-        { label: '30秒', value: 30000 },
-        { label: '1分钟', value: 60000 },
-        { label: '5分钟', value: 300000 }
+        {label: '1毫秒', value: 1},
+        {label: '100毫秒', value: 100},
+        {label: '1秒', value: 1000},
+        {label: '15秒', value: 15000},
+        {label: '30秒', value: 30000},
+        {label: '1分钟', value: 60000},
+        {label: '5分钟', value: 300000},
+        {label: '15分钟', value: 900000},
+        {label: '30分钟', value: 1800000},
+        {label: '1小时', value: 3600000},
+        {label: '2小时', value: 7200000},
+        {label: '4小时', value: 14400000},
+        {label: '8小时', value: 28800000},
+        {label: '12小时', value: 43200000},
+        {label: '24小时', value: 86400000}
     ];
+    
+    // 在 ServiceTopologyTimeline.vue 的 script 部分末尾添加
+    defineExpose({
+        userStartTime,
+        userEndTime,
+        currentTimestamp
+    });
     
     const emit = defineEmits(['update-topology']);
     
@@ -157,7 +172,7 @@
             />
             <el-select
                 v-model="stepValue"
-                placeholder="选择步长"
+                placeholder="选择拖动时间步长"
                 size="small"
                 @change="handleStepChange"
             >

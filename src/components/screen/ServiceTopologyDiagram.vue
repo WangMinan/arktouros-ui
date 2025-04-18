@@ -4,13 +4,19 @@
     import * as echarts from 'echarts';
     import { useStorage } from '@vueuse/core'
     import { ElLoading } from "element-plus";
+    import { useAsideStore } from "@/store/aside/index.js";
+    import { useRouter } from "vue-router";
+    
+    const asideStore = useAsideStore()
+    const router = useRouter()
     
     // 使用props从父组件向子组件传参
     const props = defineProps({
         namespace: String,
         symbolSize: Number,
         repulsion: Number,
-        edgeLength: Number
+        edgeLength: Number,
+        getTimelineRange: Function
     });
     
     const nodes = ref([])
@@ -35,9 +41,9 @@
                         symbolSize: [props.symbolSize, props.symbolSize], // 关系图节点标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
                         item: item, // 传递给toolTip的附加信息
                         itemStyle: {
-                            color: item.nodeObject.status ? "#C7EDCC": "#FF2700",
+                            color: item.nodeObject.status ? "#C7EDCC" : "#FF2700",
                             // 如果正常就用浅绿色 否则用黄色
-                            borderColor: item.nodeObject.status ? "#6EF780": "#FFEE00",
+                            borderColor: item.nodeObject.status ? "#6EF780" : "#FFEE00",
                         }
                     }
                 }
@@ -96,6 +102,28 @@
                 </div>`;
     }
     
+    const checkTimeLineForSpan = async (service) => {
+        asideStore.$patch((state) => {
+            state.currentAside.active = '/main/trace/timeout'
+        })
+        
+        // 获取时间范围
+        const { startTime: startTimeValue, stopTime: stopTimeValue } = props.getTimelineRange();
+        
+        let spanName = service.tags.find(tag => tag.key === 'long_duration')
+        // 如果spanName是数组 拿第0个元素的value 否则直接拿value
+        if (Array.isArray(spanName)) {
+            spanName = spanName[0].value
+        } else if (spanName) {
+            spanName = spanName.value
+        } else {
+            spanName = ''
+        }
+        
+        // 使用获取的时间范围
+        await router.push(`/main/trace/timeout?serviceName=${service.name}&startTime=${startTimeValue}&stopTime=${stopTimeValue}&namespace=${service.namespace}&spanName=${spanName}`)
+    }
+    
     const drawServiceTopology = async (timestamp) => {
         await getTopology(timestamp)
         if (serviceTopologyChart) {
@@ -106,9 +134,7 @@
             title: {
                 text: "服务关系图", // 标题文本
             },
-            legend: {
-            
-            }, // 图例
+            legend: {}, // 图例
             tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove',
@@ -117,8 +143,12 @@
                     color: checkIsDark.value === 'dark' ? '#fff' : '#212224',
                 },
                 formatter: function (params) {
-                    // 通过修改SpanTreeNodeVo，我们把Span对象也放到params中
-                    return formatService(params.data.item.nodeObject);
+                   if (params.data.item !== undefined) {
+                       // 通过修改SpanTreeNodeVo，我们把Span对象也放到params中
+                       return formatService(params.data.item.nodeObject);
+                   } else {
+                       return null
+                   }
                 }
             },
             label: {                // 关系对象上的标签
@@ -171,6 +201,9 @@
             checkIsDark.value === 'dark' ? 'dark' : 'light'
         );
         serviceTopologyChart.setOption(option)
+        serviceTopologyChart.on('click', async function (params) {
+            await checkTimeLineForSpan(params.data.item.nodeObject)
+        })
     }
     
     const handleResize = () => {

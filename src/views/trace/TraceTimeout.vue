@@ -1,11 +1,13 @@
 <script setup>
-    import { reactive, ref } from "vue";
+    import { onMounted, reactive, ref } from "vue";
     import { getNamespaceList, getServiceList } from "@/api/service/index.js";
     import { getSpanNameList } from "@/api/trace/index.js";
     import TraceTimeoutDiagram from "@/components/screen/TraceTimeoutDiagram.vue";
+    import { useRouter } from "vue-router";
     
     const startAndStopTime = ref([])
     const spanNameCascade = ref()
+    const router = useRouter()
     
     const traceIdCascaderProps = reactive({
         lazy: true,
@@ -54,10 +56,12 @@
             } else if (level === 2) {
                 let tmpStart = null
                 let tmpStop = null
+                console.log(startAndStopTime.value)
                 if (startAndStopTime.value != null && startAndStopTime.value.length === 2) {
                     tmpStart = Date.parse(startAndStopTime.value[0])
                     tmpStop = Date.parse(startAndStopTime.value[1])
                 }
+                console.log(tmpStart)
                 const data = await getSpanNameList(node.value, tmpStart, tmpStop)
                 if (data === null) {
                     return
@@ -78,6 +82,27 @@
     })
     
     const traceTimeoutDiagramRef = ref()
+    
+    onMounted(async () => {
+        if (router.currentRoute.value.query.startTime != null
+            && router.currentRoute.value.query.stopTime != null
+            && router.currentRoute.value.query.namespace != null
+            && router.currentRoute.value.query.serviceName != null
+            && router.currentRoute.value.query.spanName != null
+        ) {
+            startAndStopTime.value = [
+                // unix时间戳转Date
+                new Date(Number(router.currentRoute.value.query.startTime)),
+                new Date(Number(router.currentRoute.value.query.stopTime))
+            ]
+            console.log(startAndStopTime.value)
+            spanNameCascade.value = [
+                router.currentRoute.value.query.namespace,
+                router.currentRoute.value.query.serviceName,
+                router.currentRoute.value.query.spanName
+            ]
+        }
+    })
 </script>
 
 <template>

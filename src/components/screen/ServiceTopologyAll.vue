@@ -4,6 +4,7 @@
     import ServiceTopologyTimeline from "@/components/screen/ServiceTopologyTimeline.vue";
     
     const serviceTopologyDiagramRef = ref()
+    const serviceTopologyTimelineRef = ref()
     
     defineProps({
         namespace: String,
@@ -16,12 +17,24 @@
         await serviceTopologyDiagramRef.value.getTopology()
     }
     
+    const getTimelineRange = () => {
+        if (serviceTopologyTimelineRef.value) {
+            return {
+                startTime: serviceTopologyTimelineRef.value.userStartTime.getTime(),
+                stopTime: serviceTopologyTimelineRef.value.currentTimestamp
+            };
+        }
+        return {
+            startTime: Date.now() - 24 * 60 * 60 * 1000,
+            stopTime: Date.now()
+        };
+    };
+    
     defineExpose({
         getTopology
     })
     
     const updateTopology = async (timestamp) => {
-        // 这里可以传递timestamp到getTopology方法
         await serviceTopologyDiagramRef.value.drawServiceTopology(timestamp);
     }
 </script>
@@ -35,8 +48,10 @@
                 :symbolSize="50"
                 :repulsion="200"
                 :edgeLength="100"
+                :getTimelineRange="getTimelineRange"
             />
             <service-topology-timeline
+                ref="serviceTopologyTimelineRef"
                 @update-topology="updateTopology"
             />
         </el-card>

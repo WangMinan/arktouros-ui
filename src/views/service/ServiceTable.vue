@@ -183,7 +183,6 @@
                 >
                     <el-table-column prop="name" label="服务名"/>
                     <el-table-column prop="namespace" label="命名空间"/>
-                    <el-table-column prop="nodeName" label="节点名称"/>
                     <el-table-column prop="latency" label="时延"/>
                     <el-table-column prop="status" label="状态"/>
                     <el-table-column fixed="right" label="操作">
