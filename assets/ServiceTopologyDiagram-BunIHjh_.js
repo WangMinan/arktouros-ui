@@ -1,13 +1,13 @@
-import { c as w } from "./index-C7NnqODs.js";
+import { c as w } from "./index-CNgvgPle.js";
 import { i as O } from "./echarts-DuzIGl-8.js";
 import { b as T } from "./@vueuse-BrKJyrsM.js";
 import { u as E } from "./index-DQDgIJ2e.js";
-import { u as $ } from "./vue-router-DZ3MrWk1.js";
-import { a as C } from "./element-plus-hbUA32rR.js";
+import { u as C } from "./vue-router-DZ3MrWk1.js";
+import { a as $ } from "./element-plus-hbUA32rR.js";
 import { r as p, b as j, W as z, w as _, c as F, o as N } from "./@vue-CnBZ4jx_.js";
 const L = { id: "service-topology-dom" }, V = { __name: "ServiceTopologyDiagram", props: { namespace: String, symbolSize: Number, repulsion: Number, edgeLength: Number, getTimelineRange: Function }, setup(f, { expose: y }) {
-  const b = E(), v = $(), i = f, d = p([]), g = p([]), S = async (e) => {
-    let n = C.service({ lock: true, text: "\u6B63\u5728\u751F\u6210\u670D\u52A1\u62D3\u6251\uFF0C\u8BF7\u7B49\u5F85\u3002", background: "rgba(0, 0, 0, 0.7)" });
+  const b = E(), v = C(), i = f, d = p([]), g = p([]), S = async (e) => {
+    let n = $.service({ lock: true, text: "\u6B63\u5728\u751F\u6210\u670D\u52A1\u62D3\u6251\uFF0C\u8BF7\u7B49\u5F85\u3002", background: "rgba(0, 0, 0, 0.7)" });
     try {
       const t = await w(i.namespace, e), a = t.result.nodes;
       d.value = a.map((o) => o.nodeObject !== null ? { draggable: true, name: o.nodeObject.name, category: o.nodeObject.status ? 0 : 1, symbolSize: [i.symbolSize, i.symbolSize], item: o, itemStyle: { color: o.nodeObject.status ? "#C7EDCC" : "#FF2700", borderColor: o.nodeObject.status ? "#6EF780" : "#FFEE00" } } : null);
@@ -35,7 +35,6 @@ const L = { id: "service-topology-dom" }, V = { __name: "ServiceTopologyDiagram"
                         <li>id: ${e.id}</li>
                         <li>\u540D\u79F0: ${e.name}</li>
                         <li>\u547D\u540D\u7A7A\u95F4: ${e.namespace}</li>
-                        <li>\u5EF6\u8FDF: ${e.latency} ms</li>
                         <li>\u72B6\u6001: ${n}</li>
                         <li>\u6807\u7B7E: ${t}</li>
                     </ul>
