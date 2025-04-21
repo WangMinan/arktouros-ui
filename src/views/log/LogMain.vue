@@ -194,15 +194,42 @@
     
     const { toClipboard } = useClipboard()
     
+    const formatLogs = (logList) => {
+        // 以行形式逐条输出日志
+        let formattedLogs = ''
+        logList.forEach(log => {
+            formattedLogs += timestampToJsTimeStr(log.timestamp) + ', '
+            formattedLogs += log.serviceName + ', '
+            formattedLogs += log.severityText + ', '
+            formattedLogs += log.content + ', '
+            formattedLogs += log.traceId + ', '
+            formattedLogs += log.spanId + ', '
+            formattedLogs += log.error + ', '
+            formattedLogs += '\n'
+        })
+        return formattedLogs
+    }
+    
     const copyLogsToClipBoard = async () => {
         try {
             // 只能是纯文本 不可以是对象
-            await toClipboard(JSON.stringify(logList.value))
+            await toClipboard(formatLogs(logList.value))
             // 复制成功
         } catch (e) {
             // 复制失败
             console.error(e)
         }
+    }
+    
+    const downloadLogsToFile = async () => {
+        const content = formatLogs(logList.value)
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = "logs.txt"
+        a.click();
+        URL.revokeObjectURL(url);
     }
 </script>
 
@@ -278,6 +305,9 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="copyLogsToClipBoard" icon="CopyDocument">复制搜索结果</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="downloadLogsToFile" icon="Download">下载日志文件</el-button>
                     </el-form-item>
                 </el-form>
             </div>

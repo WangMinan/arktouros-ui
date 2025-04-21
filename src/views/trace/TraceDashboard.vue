@@ -81,6 +81,8 @@
         if (router.currentRoute.value.query.traceId) {
             // 如果traceIdList没有这个值 写入
             if (!traceIdList.value.includes(router.currentRoute.value.query.traceId)) {
+                // 清空traceId
+                traceIdList.value = []
                 traceIdList.value.push(router.currentRoute.value.query.traceId)
             }
             traceId.value = router.currentRoute.value.query.traceId
@@ -190,8 +192,6 @@
             router.go(0)
         }
     }
-    
-    
 </script>
 
 <template>
