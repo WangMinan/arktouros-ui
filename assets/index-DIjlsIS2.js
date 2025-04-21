@@ -1,5 +1,5 @@
-import { _ as s } from "./index-CNgvgPle.js";
-import { E as a } from "./element-plus-hbUA32rR.js";
+import { _ as s } from "./index-DexSeZ02.js";
+import { E as a } from "./element-plus-BOJqSAUc.js";
 const l = async (e) => {
   try {
     const { data: r } = await s.get("/log/levels", { params: { query: e } });

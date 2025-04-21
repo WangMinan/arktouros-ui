@@ -1,5 +1,5 @@
-import { _ as l } from "./index-CNgvgPle.js";
-import { E as r } from "./element-plus-hbUA32rR.js";
+import { _ as l } from "./index-DexSeZ02.js";
+import { E as r } from "./element-plus-BOJqSAUc.js";
 const i = async (e) => {
   try {
     const { data: a } = await l.get("/trace/endPoints", { params: { serviceName: e.serviceName, pageNum: e.pageNum, pageSize: e.pageSize, startTimestamp: e.startTimestamp, endTimestamp: e.endTimestamp } });
