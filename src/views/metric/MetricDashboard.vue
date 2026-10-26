@@ -84,13 +84,13 @@
         })
         try {
             const data = await deleteAllMetricsFromDB()
-            if (data === null || data.result.length === 0) {
+            if (data === null) {
                 return
             }
             ElMessage.success('删除所有数值数据成功')
+            router.go(0)
         } finally {
             loading.close()
-            router.go(0)
         }
     }
 </script>

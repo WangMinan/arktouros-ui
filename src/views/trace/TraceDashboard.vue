@@ -183,13 +183,13 @@
         })
         try {
             const data = await deleteAllSpansFromDB()
-            if (data === null || data.result.length === 0) {
+            if (data === null) {
                 return
             }
             ElMessage.success('删除所有链路数据成功')
+            router.go(0)
         } finally {
             loading.close()
-            router.go(0)
         }
     }
 </script>

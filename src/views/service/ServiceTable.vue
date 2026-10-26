@@ -96,14 +96,14 @@
         })
         try {
             const data = await deleteAllDataFromDB()
-            if (data === null || data.result.length === 0) {
+            if (data === null) {
                 return
             }
-            ElMessage.success('删除所有数值数据成功')
-        } finally {
-            loading.close()
+            ElMessage.success('删除所有数据成功')
             serviceList.value = []
             router.go(0)
+        } finally {
+            loading.close()
         }
     }
 </script>

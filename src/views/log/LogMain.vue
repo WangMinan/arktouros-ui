@@ -181,14 +181,14 @@
         })
         try {
             const data = await deleteAllLogsFromDB()
-            if (data === null || data.result.length === 0) {
+            if (data === null) {
                 return
             }
             ElMessage.success('删除所有日志数据成功')
-        } finally {
-            loading.close()
             logList.value.splice(0, logList.value.length)
             router.go(0)
+        } finally {
+            loading.close()
         }
     }
     
